@@ -3258,7 +3258,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrounTileChnageTest
   targetTile: {fileID: 419926452}
-  targetChange: {fileID: 11400000, guid: f1f7230c3e5d48841bb8492f16bf2e6c, type: 2}
+  PlowedTile: {fileID: 11400000, guid: f1f7230c3e5d48841bb8492f16bf2e6c, type: 2}
+  WetTile: {fileID: 11400000, guid: df85500e516698d49b0cd3cac3e83ccb, type: 2}
+  collectedGameObjectTiles: []
 --- !u!1 &1434249884
 GameObject:
   m_ObjectHideFlags: 0
