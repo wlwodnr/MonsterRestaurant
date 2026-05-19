@@ -8,6 +8,7 @@ public class TileManager : MonoBehaviour
     [SerializeField]Tilemap targetTile;
     [SerializeField]private TileBase PlowedTile;
     [SerializeField] private TileBase WetTile;
+    [SerializeField] private CropManager cropManager;
 
     [SerializeField]private List<Vector3Int> collectedTilePositions = new List<Vector3Int>();
 
@@ -172,6 +173,10 @@ public class TileManager : MonoBehaviour
             }
         }
         Debug.Log($"{DryingCount}개의 개간된 땅이 매말랐습니다.");
+        if(DryingCount != 0)
+        {
+            cropManager.GrowCrop();
+        }
 
     }
 
