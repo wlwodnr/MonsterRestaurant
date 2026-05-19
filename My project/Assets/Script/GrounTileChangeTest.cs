@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public class GrounTileChnageTest : MonoBehaviour
+public class GrounTileChangeTest : MonoBehaviour
 {
     [SerializeField]Tilemap targetTile;
     [SerializeField]private TileBase PlowedTile;
@@ -108,6 +108,38 @@ public class GrounTileChnageTest : MonoBehaviour
             Debug.Log($"{wateredCount}개의 개간된 땅에 물을 뿌렸습니다");
         }
 
+    }
+
+    public Vector3Int GetMouseCellPosition(Vector3 mousePosition)
+    {
+        if (targetTile == null) return Vector3Int.zero;
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
+        worldPos.z = 0;
+
+        return targetTile.WorldToCell(worldPos);
+    }
+
+    public bool CanPlantCrop(Vector3Int cellPosition)
+    {
+        if (targetTile == null)
+        {
+            return false;
+        }
+        if (!collectedTilePositions.Contains(cellPosition))
+        {
+            Debug.Log($"[{cellPosition}] 이 구역은 농사를 지을 수 없는 영역입니다.");
+            return false;
+        }
+
+        TileBase currentTile = targetTile.GetTile(cellPosition);
+
+        if (currentTile == PlowedTile || currentTile == WetTile)
+        {
+            return true;
+        }
+
+        Debug.Log($"{currentTile} 땅은 농사를 지을 수 있는 타일이지만, 개간되지 않아 준비되지 않았습니다.");
+        return false;
     }
 
 

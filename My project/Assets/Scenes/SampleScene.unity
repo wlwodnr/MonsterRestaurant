@@ -3223,6 +3223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1109733255}
   - component: {fileID: 1109733256}
+  - component: {fileID: 1109733257}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3260,7 +3261,19 @@ MonoBehaviour:
   targetTile: {fileID: 419926452}
   PlowedTile: {fileID: 11400000, guid: f1f7230c3e5d48841bb8492f16bf2e6c, type: 2}
   WetTile: {fileID: 11400000, guid: df85500e516698d49b0cd3cac3e83ccb, type: 2}
-  collectedGameObjectTiles: []
+  collectedTilePositions: []
+--- !u!114 &1109733257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109733254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff72bf9760911445be0d56adf4974de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CropPlanter
 --- !u!1 &1434249884
 GameObject:
   m_ObjectHideFlags: 0
