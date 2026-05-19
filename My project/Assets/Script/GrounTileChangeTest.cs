@@ -49,7 +49,7 @@ public class GrounTileChangeTest : MonoBehaviour
     }
 
 
-    public void ChangeAllCollectedTiles()
+    private void ChangeAllCollectedTiles()
     {
         if (PlowedTile == null)
         {
@@ -77,7 +77,7 @@ public class GrounTileChangeTest : MonoBehaviour
         }
         Debug.Log($"{collectedTilePositions.Count}개의 구역을 개간했습니다");
     }
-    public void WateringInTile()
+    private void WateringInTile()
     {
         if (WetTile == null || targetTile == null)
         {
