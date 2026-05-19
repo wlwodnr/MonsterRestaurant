@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
-public class GrounTileChangeTest : MonoBehaviour
+public class TileManager : MonoBehaviour
 {
     [SerializeField]Tilemap targetTile;
     [SerializeField]private TileBase PlowedTile;
@@ -105,8 +105,9 @@ public class GrounTileChangeTest : MonoBehaviour
                 Debug.Log("현재 타일을 개간하지 않았습니다.");
                 return;
             }
-            Debug.Log($"{wateredCount}개의 개간된 땅에 물을 뿌렸습니다");
         }
+        Debug.Log($"{wateredCount}개의 개간된 땅에 물을 뿌렸습니다");
+
 
     }
 
@@ -140,6 +141,38 @@ public class GrounTileChangeTest : MonoBehaviour
 
         Debug.Log($"{currentTile} 땅은 농사를 지을 수 있는 타일이지만, 개간되지 않아 준비되지 않았습니다.");
         return false;
+    }
+
+    public void DryingGround()
+    {
+        int DryingCount = 0;
+        if (WetTile == null || targetTile == null)
+        {
+            Debug.Log("타일맵 또는  WetTile 타일이 설정되지 않았습니다.");
+            return;
+        }
+        if (collectedTilePositions.Count == 0)
+        {
+            Debug.Log("탐색된 타일 좌표가 리스트에 없습니다.");
+        }
+
+        foreach (Vector3Int pos in collectedTilePositions)
+        {
+            TileBase currentTile = targetTile.GetTile(pos);
+
+            if (currentTile == WetTile)
+            {
+                targetTile.SetTile(pos, PlowedTile);
+                DryingCount++;
+            }
+            else
+            {
+                Debug.Log("땅이 젖어있지 않아 변화가 없습니다.");
+                return;
+            }
+        }
+        Debug.Log($"{DryingCount}개의 개간된 땅이 매말랐습니다.");
+
     }
 
 

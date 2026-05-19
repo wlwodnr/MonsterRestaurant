@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 public class CropPlanter : MonoBehaviour
 {
     [SerializeField]
-    private GrounTileChangeTest groundMnager;
+    private TileManager groundMnager;
 
     [SerializeField]
     private Tilemap cropTilemap;
