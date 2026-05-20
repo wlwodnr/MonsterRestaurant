@@ -4,8 +4,11 @@ using System.Collections.Generic;
 
 public class CropManager : MonoBehaviour
 {
-    [SerializeField]
-    private TileManager TileManager;
+
+    public static CropManager Instance {  get; private set; }
+
+    //[SerializeField]
+    //private TileManager TileManager;
 
     [SerializeField]
     private Tilemap cropTilemap;
@@ -17,6 +20,20 @@ public class CropManager : MonoBehaviour
     private TileBase[] cropGrowthStages;
 
     private Dictionary<Vector3Int, int> plantedCropStages = new Dictionary<Vector3Int, int>();
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.Log($"중복된 CropManager가 있어 파괴합니다: {gameObject.name}");
+            Destroy(gameObject);
+        }
+
+    }
 
 
     private void Start()
@@ -34,15 +51,15 @@ public class CropManager : MonoBehaviour
 
     private void PlantCrop()
     {
-        if (TileManager == null || cropTilemap == null || cropGrowthStages == null || cropGrowthStages.Length == 0)
+        if (TileManager.Instance == null || cropTilemap == null || cropGrowthStages == null || cropGrowthStages.Length == 0)
         {
             Debug.Log("필요한 컴포넌트나, 타일이 인스펙터에 지정되지 않았습니다.");
             return;
         }
 
-        Vector3Int clickCellPos = TileManager.GetMouseCellPosition(Input.mousePosition);
+        Vector3Int clickCellPos = TileManager.Instance.GetMouseCellPosition(Input.mousePosition);
 
-        if (TileManager.CanPlantCrop(clickCellPos))
+        if (TileManager.Instance.CanPlantCrop(clickCellPos))
         {
             if (cropTilemap.HasTile(clickCellPos))
             {
@@ -80,7 +97,7 @@ public class CropManager : MonoBehaviour
 
     public void GrowCrop()
     {
-        if (TileManager == null || cropTilemap == null || cropGrowthStages == null)
+        if (TileManager.Instance == null || cropTilemap == null || cropGrowthStages == null)
         {
             Debug.Log("필요한 컴포넌트나, 타일이 인스펙터에 지정되지 않았습니다.");
             return;

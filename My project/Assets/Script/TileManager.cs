@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class TileManager : MonoBehaviour
 {
+    public static TileManager Instance { get; private set; }
     [SerializeField]Tilemap targetTile;
     [SerializeField]private TileBase PlowedTile;
     [SerializeField] private TileBase WetTile;
@@ -12,6 +13,18 @@ public class TileManager : MonoBehaviour
 
     [SerializeField]private List<Vector3Int> collectedTilePositions = new List<Vector3Int>();
 
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.Log($"중복된 TileManager가 있어 파괴합니다: {gameObject.name}");
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {

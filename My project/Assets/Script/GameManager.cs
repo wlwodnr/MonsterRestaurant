@@ -2,17 +2,32 @@
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private TimeManager timeManager;
+    //[SerializeField] private TimeManager timeManager;
     
+    public static GameManager Instance {  get; private set; }
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.Log($"중복된 GameManager가 발견되어 파괴합니다: {gameObject.name}");
+            Destroy(gameObject);
+        }
+    }
+
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.D))
         {
-            timeManager.TimeSetMoring();
+            TimeManager.Instance.TimeSetMoring();
         }
         if(Input.GetKeyDown(KeyCode.F))
         {
-            timeManager.TimeSetNight();
+            TimeManager.Instance.TimeSetNight();
         }
     }
 }
