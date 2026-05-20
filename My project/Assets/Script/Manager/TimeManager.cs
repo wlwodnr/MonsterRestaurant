@@ -5,7 +5,6 @@ public class TimeManager : MonoBehaviour
 {
     private bool isMoring;
     [SerializeField] private Light2D globalLite2D;
-    [SerializeField] private TileManager timeManager;
 
     public static TimeManager Instance { get; private set; }
 
@@ -60,7 +59,7 @@ public class TimeManager : MonoBehaviour
         isMoring = true;
         Debug.Log("낮으로 변경됩니다.");
         globalLite2D.intensity = 1f;
-        timeManager.DryingGround();
+        TileManager.Instance.DryingGround();
     }
 
     private bool GetCurrentTimeState()

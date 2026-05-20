@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "Potato_Level_0",
+    "Name": "감자 0단계",
+    "Description": "씨앗을 심은 직후의 감자",
+    "IconPath": "Crop/Potato_Level_0",
+    "NextLevelID": "Potato_Level_1"
+  },
+  {
+    "Id": "Potato_Level_1",
+    "Name": "감자 1단계",
+    "Description": "성장을 끝마친 감자",
+    "IconPath": "Crop/Potato_Level_1",
+    "NextLevelID": null
+  }
+]
