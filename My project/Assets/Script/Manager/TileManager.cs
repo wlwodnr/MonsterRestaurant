@@ -48,14 +48,14 @@ public class TileManager : MonoBehaviour
 
     void Update()//
     {
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            ChangeAllCollectedTiles();
-        }
-        if(Input.GetKeyDown(KeyCode.S))
-        {
-            WateringInTile();
-        }
+        //if(Input.GetKeyDown(KeyCode.A))
+        //{
+        //    ChangeAllCollectedTiles();
+        //}
+        //if(Input.GetKeyDown(KeyCode.S))
+        //{
+        //    WateringInTile();
+        //}
     }
 
     public void CollectGameObjectTilePositions()
@@ -205,6 +205,15 @@ public class TileManager : MonoBehaviour
             CropManager.Instance.GrowCrop();
         }
 
+    }
+
+    public void RequestedPlowing()
+    {
+        ChangeAllCollectedTiles();
+    }
+    public void RequestedWatering()
+    {
+        WateringInTile();
     }
 
 
