@@ -6,10 +6,12 @@ using System.Collections.Generic;
 public class TileManager : MonoBehaviour
 {
     public static TileManager Instance { get; private set; }
-    [SerializeField]Tilemap targetTile;
+    //[SerializeField]
+    Tilemap PlowableGroundTile;
     [SerializeField]private TileBase PlowedTile;
     [SerializeField] private TileBase WetTile;
-    [SerializeField] private CropManager cropManager;
+    //[SerializeField] private CropManager cropManager;
+
 
     [SerializeField]private List<Vector3Int> collectedTilePositions = new List<Vector3Int>();
 
@@ -23,6 +25,18 @@ public class TileManager : MonoBehaviour
         {
             Debug.Log($"중복된 TileManager가 있어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
+        }
+        if (PlowableGroundTile == null)
+        {
+            GameObject tilemapObj = GameObject.Find("PlowableGroundTile");
+            if (tilemapObj != null)
+            {
+                PlowableGroundTile = tilemapObj.GetComponent<Tilemap>();
+            }
+            if (PlowableGroundTile == null)
+            {
+                Debug.LogError("[TimeManager] 씬에서 PlowableGroundTile 오브젝트 또는 컴포넌트를 찾을 수 없습니다");
+            }
         }
     }
 
@@ -46,17 +60,17 @@ public class TileManager : MonoBehaviour
 
     public void CollectGameObjectTilePositions()
     {
-        if(targetTile  == null)
+        if(PlowableGroundTile  == null)
         {
-            Debug.Log("targetTile이 지정되지 않았습니다.");
+            Debug.Log("PlowableGroundTile이 지정되지 않았습니다.");
             return;
         }
 
         collectedTilePositions.Clear();
 
-        foreach (Transform child in targetTile.transform)
+        foreach (Transform child in PlowableGroundTile.transform)
         {
-            Vector3Int cellPosition = targetTile.WorldToCell(child.position);
+            Vector3Int cellPosition = PlowableGroundTile.WorldToCell(child.position);
             collectedTilePositions.Add(cellPosition);
         }
         Debug.Log($"총 {collectedTilePositions.Count}개의 자식 오브젝트 타일을 찾았습니다");
@@ -77,7 +91,7 @@ public class TileManager : MonoBehaviour
         }
         List<GameObject> toDestroy = new List<GameObject>();
 
-        foreach(Transform child in targetTile.transform)
+        foreach(Transform child in PlowableGroundTile.transform)
         {
             toDestroy.Add(child.gameObject);
         }
@@ -87,13 +101,13 @@ public class TileManager : MonoBehaviour
         }
         foreach(Vector3Int pos in collectedTilePositions)
         {
-            targetTile.SetTile(pos, PlowedTile);
+            PlowableGroundTile.SetTile(pos, PlowedTile);
         }
         Debug.Log($"{collectedTilePositions.Count}개의 구역을 개간했습니다");
     }
     private void WateringInTile()
     {
-        if (WetTile == null || targetTile == null)
+        if (WetTile == null || PlowableGroundTile == null)
         {
             Debug.Log("타일맵 또는  WetTile 타일이 설정되지 않았습니다.");
             return;
@@ -107,11 +121,11 @@ public class TileManager : MonoBehaviour
 
         foreach(Vector3Int pos in collectedTilePositions)
         {
-            TileBase currentTile = targetTile.GetTile(pos);
+            TileBase currentTile = PlowableGroundTile.GetTile(pos);
 
             if(currentTile == PlowedTile)
             {
-                targetTile.SetTile(pos, WetTile);
+                PlowableGroundTile.SetTile(pos, WetTile);
                 wateredCount++;
             }
             else
@@ -127,16 +141,16 @@ public class TileManager : MonoBehaviour
 
     public Vector3Int GetMouseCellPosition(Vector3 mousePosition)
     {
-        if (targetTile == null) return Vector3Int.zero;
+        if (PlowableGroundTile == null) return Vector3Int.zero;
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
         worldPos.z = 0;
 
-        return targetTile.WorldToCell(worldPos);
+        return PlowableGroundTile.WorldToCell(worldPos);
     }
 
     public bool CanPlantCrop(Vector3Int cellPosition)
     {
-        if (targetTile == null)
+        if (PlowableGroundTile == null)
         {
             return false;
         }
@@ -146,7 +160,7 @@ public class TileManager : MonoBehaviour
             return false;
         }
 
-        TileBase currentTile = targetTile.GetTile(cellPosition);
+        TileBase currentTile = PlowableGroundTile.GetTile(cellPosition);
 
         if (currentTile == PlowedTile || currentTile == WetTile)
         {
@@ -160,7 +174,7 @@ public class TileManager : MonoBehaviour
     public void DryingGround()
     {
         int DryingCount = 0;
-        if (WetTile == null || targetTile == null)
+        if (WetTile == null || PlowableGroundTile == null)
         {
             Debug.Log("타일맵 또는  WetTile 타일이 설정되지 않았습니다.");
             return;
@@ -172,11 +186,11 @@ public class TileManager : MonoBehaviour
 
         foreach (Vector3Int pos in collectedTilePositions)
         {
-            TileBase currentTile = targetTile.GetTile(pos);
+            TileBase currentTile = PlowableGroundTile.GetTile(pos);
 
             if (currentTile == WetTile)
             {
-                targetTile.SetTile(pos, PlowedTile);
+                PlowableGroundTile.SetTile(pos, PlowedTile);
                 DryingCount++;
             }
             else
@@ -188,7 +202,7 @@ public class TileManager : MonoBehaviour
         Debug.Log($"{DryingCount}개의 개간된 땅이 매말랐습니다.");
         if(DryingCount != 0)
         {
-            cropManager.GrowCrop();
+            CropManager.Instance.GrowCrop();
         }
 
     }

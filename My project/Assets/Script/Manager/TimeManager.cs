@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Tilemaps;
 
 public class TimeManager : MonoBehaviour
 {
     private bool isMoring;
-    [SerializeField] private Light2D globalLite2D;
+    private Light2D globalLite2D;
 
     public static TimeManager Instance { get; private set; }
 
@@ -18,6 +19,19 @@ public class TimeManager : MonoBehaviour
         {
             Debug.Log($"중복된 TimeManager가 발견되어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
+        }
+        if (globalLite2D == null)
+        {
+            GameObject lightObj = GameObject.Find("Global Light 2D");
+            if (lightObj != null)
+            {
+                globalLite2D = lightObj.GetComponent<Light2D>();
+                globalLite2D.lightType = Light2D.LightType.Global;
+            }
+            if (globalLite2D == null)
+            {
+                Debug.LogError("[TimeManager] 씬에서 globalLite2D 오브젝트 또는 컴포넌트를 찾을 수 없습니다");
+            }
         }
     }
 
@@ -44,7 +58,7 @@ public class TimeManager : MonoBehaviour
         globalLite2D.intensity = 0.4f;
 
     }
-    public void TimeSetMoring()
+    public void TimeSetMorning()
     {
         if (globalLite2D == null)
         {

@@ -8,7 +8,7 @@ public class CropManager : MonoBehaviour
     public static CropManager Instance {  get; private set; }
 
     
-    [SerializeField]
+    //[SerializeField]
     private Tilemap cropTilemap;
 
     [SerializeField]

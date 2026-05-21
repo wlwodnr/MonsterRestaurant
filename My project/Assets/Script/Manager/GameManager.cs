@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.D))
         {
-            TimeManager.Instance.TimeSetMoring();
+            TimeManager.Instance.TimeSetMorning();
         }
         if(Input.GetKeyDown(KeyCode.F))
         {
