@@ -6,14 +6,12 @@ using System.Collections.Generic;
 public class TileManager : MonoBehaviour
 {
     public static TileManager Instance { get; private set; }
-    //[SerializeField]
-    Tilemap PlowableGroundTile;
-    [SerializeField]private TileBase PlowedTile;
-    [SerializeField] private TileBase WetTile;
-    //[SerializeField] private CropManager cropManager;
 
 
-    [SerializeField]private List<Vector3Int> collectedTilePositions = new List<Vector3Int>();
+    [SerializeField]
+    private List<PlowableTile> collectedTiles = new List<PlowableTile>();
+    
+
 
     private void Awake()
     {
@@ -26,194 +24,120 @@ public class TileManager : MonoBehaviour
             Debug.Log($"중복된 TileManager가 있어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
         }
-        if (PlowableGroundTile == null)
-        {
-            GameObject tilemapObj = GameObject.Find("PlowableGroundTile");
-            if (tilemapObj != null)
-            {
-                PlowableGroundTile = tilemapObj.GetComponent<Tilemap>();
-            }
-            if (PlowableGroundTile == null)
-            {
-                Debug.LogError("[TimeManager] 씬에서 PlowableGroundTile 오브젝트 또는 컴포넌트를 찾을 수 없습니다");
-            }
-        }
+
     }
 
     void Start()
     {
-        Debug.Log("타일 변경 시작");
-        CollectGameObjectTilePositions();
+        CollectAllTiles();
+        
     }
 
-    void Update()//
+    void Update()
     {
-        //if(Input.GetKeyDown(KeyCode.A))
-        //{
-        //    ChangeAllCollectedTiles();
-        //}
-        //if(Input.GetKeyDown(KeyCode.S))
-        //{
-        //    WateringInTile();
-        //}
+
     }
-
-    public void CollectGameObjectTilePositions()
+    public void CollectAllTiles()
     {
-        if(PlowableGroundTile  == null)
+        collectedTiles.Clear();
+        GameObject[] taggedObjects = GameObject.FindGameObjectsWithTag("Plowable");
+
+        if (taggedObjects == null)
         {
-            Debug.Log("PlowableGroundTile이 지정되지 않았습니다.");
+            Debug.Log("개간 가능한 땅을 찾을 수 없습니다. 태그를 확인하거나, 개간 가능한 땅을 확인하세요");
             return;
         }
-
-        collectedTilePositions.Clear();
-
-        foreach (Transform child in PlowableGroundTile.transform)
+        else
         {
-            Vector3Int cellPosition = PlowableGroundTile.WorldToCell(child.position);
-            collectedTilePositions.Add(cellPosition);
-        }
-        Debug.Log($"총 {collectedTilePositions.Count}개의 자식 오브젝트 타일을 찾았습니다");
-    }
-
-
-    private void ChangeAllCollectedTiles()
-    {
-        if (PlowedTile == null)
-        {
-            Debug.Log("타일맵 또는 변경할 PlowedTile 타일이 설정되지 않았습니다.");
-            return;
-        }
-        if(collectedTilePositions.Count == 0 )
-        {
-            Debug.Log("변경할 오브젝트 타일이 리스트에 없습니다.");
-            return;
-        }
-        List<GameObject> toDestroy = new List<GameObject>();
-
-        foreach(Transform child in PlowableGroundTile.transform)
-        {
-            toDestroy.Add(child.gameObject);
-        }
-        foreach(GameObject obj in toDestroy)
-        {
-            Destroy(obj);
-        }
-        foreach(Vector3Int pos in collectedTilePositions)
-        {
-            PlowableGroundTile.SetTile(pos, PlowedTile);
-        }
-        Debug.Log($"{collectedTilePositions.Count}개의 구역을 개간했습니다");
-    }
-    private void WateringInTile()
-    {
-        if (WetTile == null || PlowableGroundTile == null)
-        {
-            Debug.Log("타일맵 또는  WetTile 타일이 설정되지 않았습니다.");
-            return;
-        }
-        if(collectedTilePositions.Count == 0)
-        {
-            Debug.Log("탐색된 타일 좌표가 리스트에 없습니다.");
-        }
-
-        int wateredCount = 0;
-
-        foreach(Vector3Int pos in collectedTilePositions)
-        {
-            TileBase currentTile = PlowableGroundTile.GetTile(pos);
-
-            if(currentTile == PlowedTile)
+            foreach (GameObject obj in taggedObjects)
             {
-                PlowableGroundTile.SetTile(pos, WetTile);
-                wateredCount++;
+                PlowableTile tile = obj.GetComponent<PlowableTile>();
+                if(tile != null)
+                {
+                    collectedTiles.Add(tile);
+                }
             }
-            else
-            {
-                Debug.Log("현재 타일을 개간하지 않았습니다.");
-                return;
-            }
+            Debug.Log($"[TileManager]: 'Plowable' 태그를 통해 총 {collectedTiles.Count}개의 타일 객체를 찾았습니다.");
         }
-        Debug.Log($"{wateredCount}개의 개간된 땅에 물을 뿌렸습니다");
-
-
-    }
-
-    public Vector3Int GetMouseCellPosition(Vector3 mousePosition)
-    {
-        if (PlowableGroundTile == null) return Vector3Int.zero;
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
-        worldPos.z = 0;
-
-        return PlowableGroundTile.WorldToCell(worldPos);
-    }
-
-    public bool CanPlantCrop(Vector3Int cellPosition)
-    {
-        if (PlowableGroundTile == null)
-        {
-            return false;
-        }
-        if (!collectedTilePositions.Contains(cellPosition))
-        {
-            Debug.Log($"[{cellPosition}] 이 구역은 농사를 지을 수 없는 영역입니다.");
-            return false;
-        }
-
-        TileBase currentTile = PlowableGroundTile.GetTile(cellPosition);
-
-        if (currentTile == PlowedTile || currentTile == WetTile)
-        {
-            return true;
-        }
-
-        Debug.Log($"{currentTile} 땅은 농사를 지을 수 있는 타일이지만, 개간되지 않아 준비되지 않았습니다.");
-        return false;
     }
 
     public void DryingGround()
     {
-        int DryingCount = 0;
-        if (WetTile == null || PlowableGroundTile == null)
+        int dryingCount = 0;
+        foreach(PlowableTile tile in collectedTiles)
         {
-            Debug.Log("타일맵 또는  WetTile 타일이 설정되지 않았습니다.");
-            return;
-        }
-        if (collectedTilePositions.Count == 0)
-        {
-            Debug.Log("탐색된 타일 좌표가 리스트에 없습니다.");
-        }
-
-        foreach (Vector3Int pos in collectedTilePositions)
-        {
-            TileBase currentTile = PlowableGroundTile.GetTile(pos);
-
-            if (currentTile == WetTile)
+            if (tile.CurrentState == PlowableTile.TileState.Wet)
             {
-                PlowableGroundTile.SetTile(pos, PlowedTile);
-                DryingCount++;
-            }
-            else
-            {
-                Debug.Log("땅이 젖어있지 않아 변화가 없습니다.");
-                return;
+                tile.ChangeState(PlowableTile.TileState.Plowed);
+                dryingCount++;
             }
         }
-        Debug.Log($"{DryingCount}개의 개간된 땅이 매말랐습니다.");
-        if(DryingCount != 0)
+        Debug.Log($"{dryingCount}개의 타일이 메말랐습니다.");
+        if (dryingCount != 0 && CropManager.Instance != null)
         {
             CropManager.Instance.GrowCrop();
         }
 
     }
 
-    public void RequestedPlowing()
+    public bool CanPlantCrop(GameObject targetObj)
     {
-        ChangeAllCollectedTiles();
+        if(targetObj == null)
+        {
+            return false;
+        }
+        PlowableTile tile = targetObj.GetComponent<PlowableTile>();
+        if (tile == null)
+        {
+            return false;
+        }
+        return (tile.CurrentState == PlowableTile.TileState.Plowed || tile.CurrentState == PlowableTile.TileState.Wet);
     }
-    public void RequestedWatering()
+
+
+    public void RequestedPlowing(GameObject targetObj)
     {
-        WateringInTile();
+        //ChangeAllCollectedTiles();
+        if(targetObj == null)
+        {
+            Debug.Log("현재 개간할 수 있는 타일을 찾지 못했습니다.");
+            return;
+        }
+        
+        PlowableTile tile = targetObj.GetComponent<PlowableTile>();
+
+        if (tile != null)
+        {
+            if(tile.CurrentState == PlowableTile.TileState.Nomal)
+            {
+                tile.ChangeState(PlowableTile.TileState.Plowed);
+                Debug.Log("선택한 타일을 개간했습니다. - Ground_1로 스프라이트 변경 및 TileState를 Plowed로 변경");
+            }
+            else
+            {
+                Debug.Log("이미 타일이 개간되었을지도 모릅니다?");
+            }
+        }
+    }
+
+
+    public void RequestedWatering(GameObject targetObj)
+    {
+        if(targetObj == null )
+        {
+            return;
+        }
+        PlowableTile tile = targetObj.GetComponent<PlowableTile> ();
+
+        if (tile.CurrentState == PlowableTile.TileState.Plowed)
+        {
+            tile.ChangeState(PlowableTile.TileState.Wet);
+            Debug.Log("선택한 타일에 물을 줬습니다. - Ground_3로 스프라이트 변경 및 TileState를 Wet으로 변경");
+        }
+        else
+        {
+            Debug.Log("개간된 땅이 범위내에 없는 것 같습니다.");
+        }
     }
 
 

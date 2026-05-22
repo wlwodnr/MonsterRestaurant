@@ -66,25 +66,32 @@ public class CropManager : MonoBehaviour
             return;
         }
 
-        Vector3Int clickCellPos = TileManager.Instance.GetMouseCellPosition(Input.mousePosition);
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
 
-        if (TileManager.Instance.CanPlantCrop(clickCellPos))
+        Collider2D hitCollider = Physics2D.OverlapPoint(mousePos2D);
+
+        if (hitCollider == null)
         {
-            if (cropTilemap.HasTile(clickCellPos))
+            Debug.Log("클릭한 곳에 오브젝트가 없습니다.");
+            return;
+        }
+
+        GameObject targetTileObj = hitCollider.gameObject;
+
+        if (TileManager.Instance.CanPlantCrop(targetTileObj))
+        {
+            Vector3Int cellPos = cropTilemap.WorldToCell(targetTileObj.transform.position);
+
+            if (cropTilemap.HasTile(cellPos))
             {
                 Debug.Log("이미 심겨져 있는 타일입니다.");
                 return;
             }
-
-            //cropTilemap.SetTile(clickCellPos, cropGrowthStages[0]);
-
-            //plantedCropStages.Add(clickCellPos, 0);
-
             string startCropId = "Potato_Level_0";
-
             CropData cropData = GameDataManager.Instance.GetCropData(startCropId);
 
-            if(cropData == null)
+            if (cropData == null)
             {
                 Debug.LogError($"[CropManager] {startCropId}에 해당하는 데이터를 GameDataManager에서 찾을 수 없습니다");
                 return;
@@ -92,23 +99,21 @@ public class CropManager : MonoBehaviour
 
             TileBase seedTile = Resources.Load<TileBase>(cropData.IconPath);
 
-            if(seedTile == null)
+            if (seedTile == null)
             {
                 Debug.LogError($"[CropManager] 리소스 로드 실패. 경로를 확인하세요: Resources/{cropData.IconPath}");
                 return;
             }
-
-            cropTilemap.SetTile(clickCellPos, seedTile);
-            plantedCropIds.Add(clickCellPos, startCropId);
-
-
-            Debug.Log($"[{clickCellPos}]좌표에 씨앗 타일을 심고 등록했습니다.");
+            cropTilemap.SetTile(cellPos, seedTile);
+            plantedCropIds.Add(cellPos, startCropId);
             
+            Debug.Log($"[{cellPos}]좌표에 씨앗 타일을 심고 등록했습니다.");
+
         }
         else
         {
-            Debug.Log("식물 심기 실패");
-        }
+            Debug.Log("이 땅은 개간되지 않았거나 식물을 심을 수 없는 땅입니다.");
+        }        
     }
 
     private void ConfigureCropLayer()
