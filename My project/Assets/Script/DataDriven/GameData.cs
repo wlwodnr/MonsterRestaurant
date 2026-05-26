@@ -21,3 +21,12 @@ public class CropData : GameDataBase
     public string IconPath;
     public string NextLevelID;
 }
+
+[System.Serializable]
+public class DishData : GameDataBase
+{
+    public string Name;
+    public string Description;
+    public string CostType;
+    public string CostCount;
+}

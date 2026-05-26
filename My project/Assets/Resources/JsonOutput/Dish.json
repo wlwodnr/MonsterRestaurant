@@ -1,0 +1,16 @@
+[
+  {
+    "Id": "Potato_Food_01",
+    "Name": "감자전",
+    "Description": "감자전이다. 재료로 감자 두개가 소모된다.",
+    "CostType": "Potato",
+    "CostCount": "2"
+  },
+  {
+    "Id": "Potato_Food_02",
+    "Name": "삶은 감자",
+    "Description": "삶은 감자다. 재료로 감자 하나가 소모된다.",
+    "CostType": "Potato",
+    "CostCount": "1"
+  }
+]

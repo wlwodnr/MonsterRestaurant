@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void Start()
+    {
+        GameDataTester.StartDataTest();
+    }
 
     void Update()
     {

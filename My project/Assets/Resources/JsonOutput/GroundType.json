@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "Ground_Type_Nomal",
+    "Name": "일반 땅",
+    "Description": "일반 땅 타일이다",
+    "IconPath": null,
+    "NextLevelID": null
+  },
+  {
+    "Id": "Ground_Type_Plowable",
+    "Name": "경작 가능한 땅",
+    "Description": "경작이 가능한 타일이다",
+    "IconPath": null,
+    "NextLevelID": null
+  },
+  {
+    "Id": "Ground_Type_Plowed",
+    "Name": "경작된 땅",
+    "Description": "경작이 된 타일이다",
+    "IconPath": null,
+    "NextLevelID": null
+  },
+  {
+    "Id": "Ground_Type_Wet",
+    "Name": "물에 젖은 경작된 땅",
+    "Description": "경작이 된 물에 젖은 땅이다. 밤에서 낮이 될 때 심겨져 있는 식물이 있다면 성장이 1단계 올라가며, 땅이 마른다",
+    "IconPath": null,
+    "NextLevelID": null
+  }
+]

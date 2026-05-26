@@ -9,6 +9,7 @@ public static class GameUtil
     {
         // 게임 로딩할 때 불러올 데이터는 여기서! 
         GameDataManager.Instance.LoadCropData(("JsonOutput/Crop"));
+        GameDataManager.Instance.LoadDishData(("JsonOutput/Dish"));
     }
 
     public static string GetFullDataPath(string dataTableName)
