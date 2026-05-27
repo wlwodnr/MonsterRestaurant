@@ -14,7 +14,9 @@ public class CropManager : MonoBehaviour
     [SerializeField]
     private int cropSortingOrder = 1;
 
-    private Dictionary<Vector3Int, string> plantedCropIds = new Dictionary<Vector3Int, string>();
+    //private Dictionary<Vector3Int, string> plantedCropIds = new Dictionary<Vector3Int, string>();
+
+    private Dictionary<Vector3Int, CropObject> plantedCrops = new Dictionary<Vector3Int, CropObject>
 
     private void Awake()
     {
@@ -54,11 +56,11 @@ public class CropManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            PlantCrop();
+            TryPlantSeedAtMouse();
         }
     }
 
-    private void PlantCrop()
+    private void TryPlantSeedAtMouse()
     {
         if (TileManager.Instance == null || cropTilemap == null)
         {
@@ -83,38 +85,87 @@ public class CropManager : MonoBehaviour
         {
             Vector3Int cellPos = cropTilemap.WorldToCell(targetTileObj.transform.position);
 
-            if (cropTilemap.HasTile(cellPos))
+            if (plantedCrops.ContainsKey(cellPos))
             {
                 Debug.Log("이미 심겨져 있는 타일입니다.");
                 return;
             }
+
             string startCropId = "Potato_Level_0";
-            CropData cropData = GameDataManager.Instance.GetCropData(startCropId);
-
-            if (cropData == null)
-            {
-                Debug.LogError($"[CropManager] {startCropId}에 해당하는 데이터를 GameDataManager에서 찾을 수 없습니다");
-                return;
-            }
-
-            TileBase seedTile = Resources.Load<TileBase>(cropData.IconPath);
-
-            if (seedTile == null)
-            {
-                Debug.LogError($"[CropManager] 리소스 로드 실패. 경로를 확인하세요: Resources/{cropData.IconPath}");
-                return;
-            }
-            cropTilemap.SetTile(cellPos, seedTile);
-            plantedCropIds.Add(cellPos, startCropId);
-            
-            Debug.Log($"[{cellPos}]좌표에 씨앗 타일을 심고 등록했습니다.");
-
+            PlantNewCropPrefab(cellPos, startCropId);
         }
         else
         {
             Debug.Log("이 땅은 개간되지 않았거나 식물을 심을 수 없는 땅입니다.");
         }        
     }
+
+    private void PlantNewCropPrefab(Vector3Int cellPos, string cropId)
+    {
+        CropData cropData = GameDataManager.Instance.GetCropData(cropId);
+
+        if(cropData == null)
+        {
+            Debug.Log($"[CropManager] {cropId}에 해당하는 데이터를 GameDataManager에서 찾을 수 없습니다.\nCrop의 Json파일에 해당 아이디를 갖고 있는 데이터가 있는지 확인해 주세요");
+            return;
+        }
+        GameObject cropPrefab = Resources.Load<GameObject>(cropData.IconPath);
+
+        if(cropPrefab == null)
+        {
+            Debug.Log($"[CropManager] 프리팹 리소스 로드 실패. 경로 확인 혹은 파일의 이름 확인해주세요 {cropData.IconPath}");
+            return;
+        }
+
+        Vector3 spawnWorldPos = cropTilemap.GetCellCenterLocal(cellPos);
+        GameObject spawnedObj = Instantiate(cropPrefab, spawnWorldPos, Quaternion.identity);
+
+        CropObject cropObj = spawnedObj.GetComponent<CropObject>();
+
+        if(cropObj == null)
+        {
+            cropObj = spawnedObj.AddComponent<CropObject>();
+        }
+        cropObj.Initialized(cellPos, cropId);
+
+        SpriteRenderer sRenderer = spawnedObj.GetComponentInChildren<SpriteRenderer>();
+        if(sRenderer != null)
+        {
+            sRenderer.sortingOrder = cropSortingOrder;
+        }
+
+        plantedCrops.Add(cellPos, cropObj);
+        Debug.Log($"[{cellPos}] 좌표에 [{cropId}] 오브젝트를 생성하고 장부에 등록했습니다.");
+    }
+
+    public void HandleCropInteraction(CropObject clickedCrop)
+    {
+        CropData currentData = GameDataManager.Instance.GetCropData(clickedCrop.CropId);
+
+        if(currentData == null)
+        {
+            return;
+        }
+
+        if(string.IsNullOrEmpty(clickedCrop.NextLevelID))
+        {
+            HarvestCrop(clickedCrop, currentData);
+        }
+        else
+        {
+            Debug.Log($"[CropManager] {currentData.Name}은 아직 자라는 중입니다.");
+        }
+
+    }
+
+    private void HarvestCrop(CropObject cropObj, CropData data)
+    {
+        string itemId = cropObj.CropId.Sprite('_')[0];
+    }
+
+
+
+
 
     private void ConfigureCropLayer()
     {
