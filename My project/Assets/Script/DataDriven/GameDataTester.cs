@@ -15,6 +15,7 @@ public static class GameDataTester
         var myPotato_Level_0 = GameDataManager.Instance.GetCropData("Potato_Level_0");
         Debug.Log(myPotato_Level_0.Description);
 
+
         //foreach(var potato in GameDataManager.Instance.CropDataList)
         //{
         //    string key = potato.Key;

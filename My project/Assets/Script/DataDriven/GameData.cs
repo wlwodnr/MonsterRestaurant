@@ -29,4 +29,13 @@ public class DishData : GameDataBase
     public string Description;
     public string CostType;
     public string CostCount;
+    public float Price;
+}
+
+[System.Serializable]
+public class CustomerData: GameDataBase
+{
+    public string Name;
+    public string Description;
+    public string CorrectAnswer;
 }

@@ -29,6 +29,8 @@ public class GameDataManager : MonoBehaviour
     public Dictionary<string, CropData> CropDataList { get; private set; } = new Dictionary<string, CropData>();
     public Dictionary<string, DishData> DishDataList { get; private set; } = new Dictionary<string, DishData>();
 
+    public Dictionary<string, CustomerData> CustomerDataList { get; private set; } = new Dictionary<string, CustomerData>();
+
     //private Dictionary<string, T> LoadData<T>(string jsonPath) where T : GameDataBase
     private Dictionary<string, T> LoadData<T>(string resourcePath) where T : GameDataBase
     {
@@ -75,6 +77,10 @@ public class GameDataManager : MonoBehaviour
     {
         DishDataList = LoadData<DishData>(resourcePath);
     }
+    public void LoadCustomerData(string resourcePath)
+    {
+        CustomerDataList = LoadData<CustomerData>(resourcePath);
+    }
 
 
     // [아래는 사용을 위한 부분들을 메서드 정의] =========================================================================================
@@ -100,6 +106,14 @@ public class GameDataManager : MonoBehaviour
         return DishDataList.TryGetValue(id, out var data) ? data : null;
     }
 
+    public CustomerData GetCustomerData(string id)
+    {
+        if(CustomerDataList == null || string.IsNullOrEmpty(id))
+        {
+            return null;
+        }
+        return CustomerDataList.TryGetValue(id, out var data) ? data : null;
+    }
     
 
 }
