@@ -16,7 +16,7 @@ public class CropManager : MonoBehaviour
 
     //private Dictionary<Vector3Int, string> plantedCropIds = new Dictionary<Vector3Int, string>();
 
-    private Dictionary<Vector3Int, CropObject> plantedCrops = new Dictionary<Vector3Int, CropObject>
+    private Dictionary<Vector3Int, CropObject> plantedCrops = new Dictionary<Vector3Int, CropObject> ();
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class CropManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonUp(0))
         {
             TryPlantSeedAtMouse();
         }
@@ -117,7 +117,7 @@ public class CropManager : MonoBehaviour
             return;
         }
 
-        Vector3 spawnWorldPos = cropTilemap.GetCellCenterLocal(cellPos);
+        Vector3 spawnWorldPos = cropTilemap.GetCellCenterWorld(cellPos);
         GameObject spawnedObj = Instantiate(cropPrefab, spawnWorldPos, Quaternion.identity);
 
         CropObject cropObj = spawnedObj.GetComponent<CropObject>();
@@ -126,7 +126,7 @@ public class CropManager : MonoBehaviour
         {
             cropObj = spawnedObj.AddComponent<CropObject>();
         }
-        cropObj.Initialized(cellPos, cropId);
+        cropObj.Initialize(cellPos, cropId);
 
         SpriteRenderer sRenderer = spawnedObj.GetComponentInChildren<SpriteRenderer>();
         if(sRenderer != null)
@@ -147,7 +147,7 @@ public class CropManager : MonoBehaviour
             return;
         }
 
-        if(string.IsNullOrEmpty(clickedCrop.NextLevelID))
+        if (string.IsNullOrEmpty(currentData.NextLevelID))
         {
             HarvestCrop(clickedCrop, currentData);
         }
@@ -160,7 +160,28 @@ public class CropManager : MonoBehaviour
 
     private void HarvestCrop(CropObject cropObj, CropData data)
     {
-        string itemId = cropObj.CropId.Sprite('_')[0];
+        string itemID = cropObj.CropId.Split('_')[0];
+        int rewardCount = 1;
+
+        if(InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.AddItem(itemID, rewardCount);
+            Debug.Log($"인벤토리에 수확물 {data.Name}이 추가되었습니다.");
+        }
+        else
+        {
+            Debug.Log("인벤토리 메니저 없음. 추가요망");
+        }
+
+        if(plantedCrops.ContainsKey(cropObj.CellPosition))
+        {
+            plantedCrops.Remove(cropObj.CellPosition);
+        }
+
+        Destroy(cropObj.gameObject);
+        Debug.Log($"[{cropObj.CellPosition}] 좌표의 식물을 성공적으로 수확하고 제거했습니다.");
+
+
     }
 
 
@@ -189,18 +210,20 @@ public class CropManager : MonoBehaviour
             Debug.Log("필요한 컴포넌트나, 타일이 인스펙터에 지정되지 않았습니다.");
             return;
         }
-        if(plantedCropIds.Count == 0)
+        if(plantedCrops.Count == 0)
         {
             Debug.Log("장부에 심겨진 식물이 없어 성장을 진행하지 않습니다");
             return;
         }
 
-        List<Vector3Int> cropPositions = new List<Vector3Int>(plantedCropIds.Keys);
+        List<Vector3Int> cropPositions = new List<Vector3Int>(plantedCrops.Keys);
         int grownCount = 0;
 
         foreach(Vector3Int pos in cropPositions)
         {
-            string currentId = plantedCropIds[pos];
+            CropObject currentCropObj = plantedCrops[pos];
+            string currentId = currentCropObj.CropId;
+
             CropData currentData = GameDataManager.Instance.GetCropData(currentId);
 
             if (currentData == null)
@@ -223,20 +246,13 @@ public class CropManager : MonoBehaviour
                 continue;
             }
 
-            TileBase nextTile = Resources.Load<TileBase>(nextData.IconPath);
 
-            if(nextTile == null)
-            {
-                Debug.Log($"[CropManager] 리소스 로드 실패! 경로: Resources/{nextData.IconPath}");
-                continue;
-            }
-
-
-            cropTilemap.SetTile(pos, nextTile);
-            plantedCropIds[pos] = nextId;
-
+            Destroy(currentCropObj.gameObject); 
+            plantedCrops.Remove(pos);
+            PlantNewCropPrefab(pos, nextId);
+            
+            
             grownCount++;
-
 
         }
         Debug.Log($"{grownCount}개의 식물 타일이 성장하였습니다");
