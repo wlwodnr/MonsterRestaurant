@@ -97,10 +97,15 @@ public class DaniTechUIButton : MonoBehaviour
                 DaniTechUIManager.Instance.OpenInventoryPopup();
                 break;
 
-            case DaniTechUIType.DNSimplePopup:
-                // 예시: 팝업은 메시지가 필요하므로 기본 메시지 전달하며 오픈
-                DaniTechUIManager.Instance.OpenSimplePopup("버튼을 통해 열린 팝업입니다.");
+            case DaniTechUIType.DNInventory_Close:
+                DaniTechUIManager.Instance.CloseContentUI(DaniTechUIType.DNInventory);
+                Debug.Log("닫기 시도");
                 break;
+
+            //case DaniTechUIType.DNSimplePopup:
+            //    // 예시: 팝업은 메시지가 필요하므로 기본 메시지 전달하며 오픈
+            //    DaniTechUIManager.Instance.OpenSimplePopup("버튼을 통해 열린 팝업입니다.");
+            //    break;
 
             case DaniTechUIType.DNMainUI:
                 DaniTechUIManager.Instance.OpenContentUI(DaniTechUIType.DNMainUI);

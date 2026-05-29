@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
     private Dictionary<string, int> itemInventory = new Dictionary<string, int>();
+
+    public event Action OnInventoryChanged;
+
 
     private void Awake()
     {
@@ -38,6 +42,7 @@ public class InventoryManager : MonoBehaviour
         }
         Debug.Log($"[Inventory] 아이템 획득: {name}을(를) {count}만큼 획득하여 총 {itemInventory[name]}개가 되었습니다.");
 
+        OnInventoryChanged?.Invoke();
     }
 
     public bool RemoveItem(string name, int count)
@@ -55,6 +60,7 @@ public class InventoryManager : MonoBehaviour
                 return false;
             }
             itemInventory[name] -= count;
+            OnInventoryChanged?.Invoke();
             return true;
         }
         else
@@ -63,6 +69,17 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
     }
+
+    public int GetItemCount(string name)
+    {
+        if(itemInventory.ContainsKey(name))
+        {
+            return itemInventory[name];
+        }
+        Debug.Log("해당 아이템은 없습니다.");
+        return 0;
+    }
+
 
     public void PrintInventoryDebug()
     {

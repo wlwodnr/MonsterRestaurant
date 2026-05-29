@@ -17,6 +17,7 @@ public enum DaniTechUIType
     DNLoadingUI,
     DNDialogueUI,
     DNInfoBookUI,
+    DNInventory_Close,
 
 }
 
@@ -44,20 +45,20 @@ public static class DaniTechUIManagerExtension
     /// <summary>
     /// 단순 메시지 팝업을 엽니다. (버튼 이벤트 등에서 활용)
     /// </summary>
-    public static void OpenSimplePopup(this DaniTechUIManager uiManager, string msg)
-    {
-        var uiBase = uiManager.OpenPopupUI(DaniTechUIType.DNSimplePopup);
-        if (uiBase == null)
-        {
-            Debug.LogWarning("[UIManager] DNSimplePopup이 생성되지 않았습니다.");
-            return;
-        }
+    //public static void OpenSimplePopup(this DaniTechUIManager uiManager, string msg)
+    //{
+    //    var uiBase = uiManager.OpenPopupUI(DaniTechUIType.DNSimplePopup);
+    //    if (uiBase == null)
+    //    {
+    //        Debug.LogWarning("[UIManager] DNSimplePopup이 생성되지 않았습니다.");
+    //        return;
+    //    }
 
-        if (uiBase is DaniTech_SimplePopup simplePopup)
-        {
-            simplePopup.SetUI(msg);
-        }
-    }
+    //    if (uiBase is DaniTech_SimplePopup simplePopup)
+    //    {
+    //        simplePopup.SetUI(msg);
+    //    }
+    //}
 
     /// <summary>
     /// 캐릭터 프로필 팝업을 엽니다.
