@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log($"중복된 GameManager가 발견되어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
+            return;
         }
     }
     public void Start()

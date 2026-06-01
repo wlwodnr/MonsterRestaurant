@@ -203,59 +203,66 @@ public class CropManager : MonoBehaviour
     }
 
 
-    public void GrowCrop()
+    public void GrowCrop(List<GameObject> wetTiles)
     {
         if (TileManager.Instance == null || cropTilemap == null)
         {
             Debug.Log("필요한 컴포넌트나, 타일이 인스펙터에 지정되지 않았습니다.");
             return;
         }
-        if(plantedCrops.Count == 0)
+        if (plantedCrops.Count == 0)
         {
             Debug.Log("장부에 심겨진 식물이 없어 성장을 진행하지 않습니다");
             return;
         }
 
-        List<Vector3Int> cropPositions = new List<Vector3Int>(plantedCrops.Keys);
+        List<(Vector3Int position, string nextCropId)> growthList = new List<(Vector3Int position, string nextCropId)>();
         int grownCount = 0;
 
-        foreach(Vector3Int pos in cropPositions)
+        foreach(GameObject tileObj in wetTiles)
         {
-            CropObject currentCropObj = plantedCrops[pos];
-            string currentId = currentCropObj.CropId;
+            Vector3Int cellPos = cropTilemap.WorldToCell(tileObj.transform.position);
 
-            CropData currentData = GameDataManager.Instance.GetCropData(currentId);
-
-            if (currentData == null)
+            if(plantedCrops.TryGetValue(cellPos, out CropObject currentCropObj))
             {
-                continue;
+                string currentId = currentCropObj.CropId;
+                CropData currentData = GameDataManager.Instance.GetCropData(currentId);
+
+                if(currentData == null)
+                {
+                    continue;
+                }
+                if(string.IsNullOrEmpty(currentData.NextLevelID))
+                {
+                    continue;
+                }
+
+                string nextId = currentData.NextLevelID;
+                CropData nextData = GameDataManager.Instance.GetCropData(nextId);
+
+                if(nextData == null)
+                {
+                    Debug.Log($"[CropManager] 다음 성장 ID [{nextId}] 데이터를 찾을 수 없습니다.");
+                    continue;
+                }
+
+                growthList.Add((cellPos, nextId));
             }
-            
-            if(string.IsNullOrEmpty(currentData.NextLevelID))
-            {
-                Debug.Log("성장을 다 했거나, 다음 성장이 설정되지 않았습니다.");
-                continue;
-            }
-
-            string nextId = currentData.NextLevelID;
-            CropData nextData = GameDataManager.Instance.GetCropData(nextId);
-
-            if(nextData == null)
-            {
-                Debug.Log($"[CropManager] 다음 성장 ID [{nextId} 데이터를 찾을 수 없습니다. 데이터 시트에 해당 ID값을 가진 데이터가 있는지 확인해주세요.]");
-                continue;
-            }
-
-
-            Destroy(currentCropObj.gameObject); 
-            plantedCrops.Remove(pos);
-            PlantNewCropPrefab(pos, nextId);
-            
-            
-            grownCount++;
-
         }
-        Debug.Log($"{grownCount}개의 식물 타일이 성장하였습니다");
-        
+
+        foreach(var target in growthList)
+        {
+            if(plantedCrops.TryGetValue(target.position, out CropObject oldCrop))
+            {
+                Destroy(oldCrop.gameObject);
+                plantedCrops.Remove(target.position);
+            }
+
+            PlantNewCropPrefab(target.position, target.nextCropId);
+            grownCount++;
+        }
+
+        Debug.Log($"물이 흡수되어 총 {grownCount}개의 식물이 성장하였습니다");
+
     }
 }

@@ -10,12 +10,23 @@ public class GameDataManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
-        // +++ C# 콘솔때와 다르게 이제 Main()함수가 아닌
-        // 모노의 메서드에서 호출될 수 있으므로, 데이터 매니저가 활성화되면 바로 모든 데이터를 한번 받아오자
-        // 이처리는 원하는 시점이 있다면 이전해도 된다
+        //Instance = this;
+        //// +++ C# 콘솔때와 다르게 이제 Main()함수가 아닌
+        //// 모노의 메서드에서 호출될 수 있으므로, 데이터 매니저가 활성화되면 바로 모든 데이터를 한번 받아오자
+        //// 이처리는 원하는 시점이 있다면 이전해도 된다
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.Log($"중복된 GameDataManager가 발견되어 파괴합니다: {gameObject.name}");
+            Destroy(gameObject);
+            return;
+        }
         GameUtil.LoadFullData();
         //GameDataTester.StartDataTest();
+
     }
 
     // --- JsonUtility의 한계를 극복하기 위한 Wrapper 클래스 ---
