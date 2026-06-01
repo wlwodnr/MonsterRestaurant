@@ -4,8 +4,17 @@ using UnityEngine.Tilemaps;
 
 public class TimeManager : MonoBehaviour
 {
-    private bool isMoring;
+    private bool _isMorning;
     private Light2D globalLite2D;
+
+    [Header("Light Setting")]
+    [SerializeField]
+    private float _MorningLightValue = 1.0f;
+    [SerializeField]
+    private float _NightLightValue = 0.4f;
+
+    [SerializeField] 
+    private Light2D Light_Global2D;
 
     public static TimeManager Instance { get; private set; }
 
@@ -19,7 +28,9 @@ public class TimeManager : MonoBehaviour
         {
             Debug.Log($"중복된 TimeManager가 발견되어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
+            return;
         }
+
         if (globalLite2D == null)
         {
             GameObject lightObj = GameObject.Find("Global Light 2D");
@@ -38,7 +49,14 @@ public class TimeManager : MonoBehaviour
 
     void Start()
     {
-        isMoring = GetCurrentTimeState();
+        if(Light_Global2D != null)
+        {
+            _isMorning = GetCurrentTimeState();
+        }
+        else
+        {
+            _isMorning = true;
+        }
     }
 
     public void TimeSetNight()
@@ -48,14 +66,14 @@ public class TimeManager : MonoBehaviour
             Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
             return;
         }
-        if(isMoring == false)
+        if(_isMorning == false)
         {
             Debug.Log("이미 밤입니다");
             return;
         }
-        isMoring = false;
+        _isMorning = false;
         Debug.Log("밤으로 변경됩니다.");
-        globalLite2D.intensity = 0.4f;
+        globalLite2D.intensity = _NightLightValue;
 
     }
     public void TimeSetMorning()
@@ -65,26 +83,26 @@ public class TimeManager : MonoBehaviour
             Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
             return;
         }
-        if(isMoring == true)
+        if(_isMorning == true)
         {
             Debug.Log("이미 낮입니다");
             return;
         }
-        isMoring = true;
+        _isMorning = true;
         Debug.Log("낮으로 변경됩니다.");
-        globalLite2D.intensity = 1f;
-        TileManager.Instance.DryingGround();
+        globalLite2D.intensity = _MorningLightValue;
+        if(TileManager.Instance != null)
+        {
+            TileManager.Instance.DryingGround();
+        }
     }
 
     private bool GetCurrentTimeState()
     {
-        if(globalLite2D.intensity == 0.4f)
-        {
-            return false;
-        }
-        else
+        if (Light_Global2D == null)
         {
             return true;
         }
+        return Light_Global2D.intensity > _NightLightValue;
     }
 }
