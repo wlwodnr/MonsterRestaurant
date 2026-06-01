@@ -63,19 +63,21 @@ public class TileManager : MonoBehaviour
 
     public void DryingGround()
     {
-        int dryingCount = 0;
+        List<GameObject> wetTileObjects = new List<GameObject>();
+
         foreach(PlowableTile tile in collectedTiles)
         {
-            if (tile.CurrentState == PlowableTile.TileState.Wet)
+            if(tile.CurrentState == PlowableTile.TileState.Wet)
             {
+                wetTileObjects.Add(tile.gameObject);
                 tile.ChangeState(PlowableTile.TileState.Plowed);
-                dryingCount++;
             }
         }
-        Debug.Log($"{dryingCount}개의 타일이 메말랐습니다.");
-        if (dryingCount != 0 && CropManager.Instance != null)
+        Debug.Log($"{wetTileObjects.Count}개의 타일이 메말랐습니다.");
+
+        if(wetTileObjects.Count > 0 && CropManager.Instance != null )
         {
-            CropManager.Instance.GrowCrop();
+            CropManager.Instance.GrowCrop( wetTileObjects );
         }
 
     }
