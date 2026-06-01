@@ -4,6 +4,10 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
+    [SerializeField]
+    private bool isShowGizmo = false;
+
+
     private Animator anim;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
@@ -89,13 +93,17 @@ public class PlayerController : MonoBehaviour
             Vector2 direction = (col.transform.position - currentPos).normalized;
             float distance = Vector2.Distance(currentPos, col.transform.position);
 
-            RaycastHit2D hit = Physics2D.Raycast(currentPos, direction, distance);
-            if (hit.collider != null && hit.collider.gameObject != gameObject && hit.collider.CompareTag("Plowable"))
+            RaycastHit2D[] hits = Physics2D.RaycastAll(currentPos, direction, distance);
+            foreach(RaycastHit2D hit in hits)
             {
-                if(distance < closestDistance)
+                if (hit.collider != null && hit.collider.gameObject != gameObject && hit.collider.CompareTag("Plowable"))
                 {
-                    closestDistance = distance;
-                    closest = hit.collider.gameObject;
+                    if(distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closest = hit.collider.gameObject;
+                    }
+                    break;
                 }
             }
         }
@@ -130,8 +138,12 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDrawGizmosSelected() //레이케스트 범위 확인용
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        if(isShowGizmo)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        }
+        
     }
 
 }
