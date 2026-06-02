@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class TimeManager : MonoBehaviour
 {
-    private bool _isMorning;
+    public bool IsMorning { get; private set; }
     private Light2D globalLite2D;
 
     [Header("Light Setting")]
@@ -17,6 +17,7 @@ public class TimeManager : MonoBehaviour
     private Light2D Light_Global2D;
 
     public static TimeManager Instance { get; private set; }
+
 
     private void Awake()
     {
@@ -51,13 +52,27 @@ public class TimeManager : MonoBehaviour
     {
         if(Light_Global2D != null)
         {
-            _isMorning = GetCurrentTimeState();
+            IsMorning = GetCurrentTimeState();
         }
         else
         {
-            _isMorning = true;
+            IsMorning = true;
         }
     }
+
+    public void ToggleTimeState()
+    {
+        if (IsMorning)
+        {
+            TimeSetNight();
+        }
+        else
+        {
+            TimeSetMorning(); 
+        }
+    }
+
+
 
     public void TimeSetNight()
     {
@@ -66,12 +81,12 @@ public class TimeManager : MonoBehaviour
             Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
             return;
         }
-        if(_isMorning == false)
+        if(IsMorning == false)
         {
             Debug.Log("이미 밤입니다");
             return;
         }
-        _isMorning = false;
+        IsMorning = false;
         Debug.Log("밤으로 변경됩니다.");
         globalLite2D.intensity = _NightLightValue;
 
@@ -83,12 +98,12 @@ public class TimeManager : MonoBehaviour
             Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
             return;
         }
-        if(_isMorning == true)
+        if(IsMorning == true)
         {
             Debug.Log("이미 낮입니다");
             return;
         }
-        _isMorning = true;
+        IsMorning = true;
         Debug.Log("낮으로 변경됩니다.");
         globalLite2D.intensity = _MorningLightValue;
         if(TileManager.Instance != null)
