@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "Crop_Potato",
+    "Name": "감자",
+    "Description": "수확된 감자"
+  },
+  {
+    "Id": "Dokkaebi_Coin",
+    "Name": "도께비 주화",
+    "Description": "음식을 팔고 받은 주화"
+  }
+]
