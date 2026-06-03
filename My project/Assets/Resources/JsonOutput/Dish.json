@@ -6,7 +6,7 @@
     "CostItemID": "Crop_Potato",
     "CostCount": "2",
     "PriceItemID": "Dokkaebi_Coin",
-    "Price": 50
+    "Price": 150
   },
   {
     "Id": "Potato_Food_02",
@@ -15,6 +15,6 @@
     "CostItemID": "Crop_Potato",
     "CostCount": "1",
     "PriceItemID": "Dokkaebi_Coin",
-    "Price": 150
+    "Price": 50
   }
 ]

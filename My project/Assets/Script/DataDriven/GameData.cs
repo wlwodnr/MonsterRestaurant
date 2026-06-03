@@ -39,7 +39,7 @@ public class DishData : GameDataBase
     public string Name;
     public string Description;
     public string CostItemID; // CostType에서 변경
-    public string CostCount;
+    public int CostCount;
     public string PriceItemID; 
     public int Price;         
 }
