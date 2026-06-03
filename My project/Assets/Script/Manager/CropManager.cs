@@ -18,6 +18,8 @@ public class CropManager : MonoBehaviour
 
     private Dictionary<Vector3Int, CropObject> plantedCrops = new Dictionary<Vector3Int, CropObject> ();
 
+    private Camera _mainCamera;
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,15 +32,16 @@ public class CropManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        _mainCamera = Camera.main;
 
-        if(cropTilemap == null)
+        if (cropTilemap == null)
         {
             GameObject tilemapObj = GameObject.Find("CropTilemap");
-            if(tilemapObj != null)
+            if (tilemapObj != null)
             {
                 cropTilemap = tilemapObj.GetComponent<Tilemap>();
             }
-            if(cropTilemap == null)
+            if (cropTilemap == null)
             {
                 Debug.LogError("[CropManager] 씬에서 CropTilemap 오브젝트 또는 컴포넌트를 찾을 수 없습니다");
             }
@@ -50,7 +53,43 @@ public class CropManager : MonoBehaviour
     private void Start()
     {
         ConfigureCropLayer();
+
+        if(TimeManager.Instance != null)
+        {
+            TimeManager.Instance.OnTimeStateChanged -= OnTimeStateChanged;
+            TimeManager.Instance.OnTimeStateChanged += OnTimeStateChanged;
+        }
+
     }
+
+    private void OnDestroy()
+    {
+        if(TimeManager.Instance != null)
+        {
+            TimeManager.Instance.OnTimeStateChanged -= OnTimeStateChanged;
+        }
+    }
+
+    private void OnTimeStateChanged(_mTimeState state)
+    {
+        if (state == _mTimeState.Night)
+        {
+            if (TileManager.Instance != null)
+            {
+                List<GameObject> wetTiles = TileManager.Instance.GetWetTiles();
+
+                if (wetTiles != null && wetTiles.Count > 0)
+                {
+                    GrowCrop(wetTiles);
+                }
+                else
+                {
+                    Debug.Log("[CropManager] 밤이 되었으나 물이 뿌려진 타일이 없어 성장을 진행하지 않습니다.");
+                }
+            }
+        }
+    }
+
 
     private void Update()
     {
@@ -68,7 +107,15 @@ public class CropManager : MonoBehaviour
             return;
         }
 
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (_mainCamera == null) _mainCamera = Camera.main;
+
+        if (_mainCamera == null)
+        {
+            Debug.LogError("[CropManager] 씬 내에서 유효한 MainCamera를 찾을 수 없어 작물을 심을 수 없습니다.");
+            return;
+        }
+
+        Vector3 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
 
         Collider2D hitCollider = Physics2D.OverlapPoint(mousePos2D);
@@ -183,9 +230,6 @@ public class CropManager : MonoBehaviour
 
 
     }
-
-
-
 
 
     private void ConfigureCropLayer()

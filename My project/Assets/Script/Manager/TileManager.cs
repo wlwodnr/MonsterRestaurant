@@ -63,22 +63,34 @@ public class TileManager : MonoBehaviour
 
     public void DryingGround()
     {
-        List<GameObject> wetTileObjects = new List<GameObject>();
+        //List<GameObject> wetTileObjects = new List<GameObject>();
 
+        //foreach(PlowableTile tile in collectedTiles)
+        //{
+        //    if(tile.CurrentState == PlowableTile.TileState.Wet)
+        //    {
+        //        wetTileObjects.Add(tile.gameObject);
+        //        tile.ChangeState(PlowableTile.TileState.Plowed);
+        //    }
+        //}
+        //Debug.Log($"{wetTileObjects.Count}개의 타일이 메말랐습니다.");
+
+        //if(wetTileObjects.Count > 0 && CropManager.Instance != null )
+        //{
+        //    CropManager.Instance.GrowCrop( wetTileObjects );
+        //}
+        
+        int dryCount = 0;
         foreach(PlowableTile tile in collectedTiles)
         {
-            if(tile.CurrentState == PlowableTile.TileState.Wet)
+            if(tile != null && tile.CurrentState == PlowableTile.TileState.Wet)
             {
-                wetTileObjects.Add(tile.gameObject);
                 tile.ChangeState(PlowableTile.TileState.Plowed);
+
+                dryCount++;
             }
         }
-        Debug.Log($"{wetTileObjects.Count}개의 타일이 메말랐습니다.");
-
-        if(wetTileObjects.Count > 0 && CropManager.Instance != null )
-        {
-            CropManager.Instance.GrowCrop( wetTileObjects );
-        }
+        Debug.Log($"{dryCount}개의 타일이 메말랐습니다.");
 
     }
 
@@ -142,5 +154,19 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    public List<GameObject> GetWetTiles()
+    {
+        List<GameObject> wetTileObjects = new List<GameObject>();
+
+        foreach (PlowableTile tile in collectedTiles)
+        {
+            if (tile != null && tile.CurrentState == PlowableTile.TileState.Wet)
+            {
+                wetTileObjects.Add(tile.gameObject);
+            }
+        }
+        
+        return wetTileObjects;
+    }
 
 }

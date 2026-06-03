@@ -3,41 +3,74 @@ using UnityEngine.UI;
 
 public class TimeChangeButton : MonoBehaviour
 {
+
+    private bool _isCoolDown = false;
+
+    [SerializeField]
+    private float _mCoolTime = 1.0f;
+
     [SerializeField] private Button _buttonBase;
-    [SerializeField] private Image _buttonImage; // 이미지가 바뀌어야 할 컴포넌트
+    [SerializeField] private Image _buttonImage;
+
+    private void Awake()
+    {
+        if(_buttonBase == null)
+        {
+            _buttonBase = GetComponent<Button>();
+        }
+        if( _buttonImage == null)
+        {
+            _buttonImage = GetComponent<Image>();
+        }
+    }
+
 
     private void Start()
     {
-        if (_buttonBase == null) _buttonBase = GetComponent<Button>();
-        if (_buttonImage == null) _buttonImage = GetComponent<Image>();
-
+        _buttonBase.onClick.RemoveAllListeners();
         _buttonBase.onClick.AddListener(OnButtonClick);
 
-        // [수정] 매니저 상태와 상관없이 시작 시 무조건 '아침' 이미지로 강제 설정합니다.
-        Sprite initialMorningSprite = Resources.Load<Sprite>("Image/Morning");
-        if (initialMorningSprite != null)
+        if (TimeManager.Instance != null)
         {
-            _buttonImage.sprite = initialMorningSprite;
+            TimeManager.Instance.OnTimeStateChanged -= UpdateButtonImage;
+            TimeManager.Instance.OnTimeStateChanged += UpdateButtonImage;
+            UpdateButtonImage(TimeManager.Instance.CurrentState);
         }
         else
         {
-            Debug.LogError("[TimeChangeButton] 초기 아침 이미지를 로드할 수 없습니다!");
+            Debug.LogError("[TimeChangeButton] Start 시점에도 TimeManager를 찾을 수 없습니다!");
         }
     }
 
     private void OnButtonClick()
     {
-        TimeManager.Instance.ToggleTimeState();
+        if (_isCoolDown) return; 
 
-        UpdateImage();
+        StartCoroutine(CoolDownRoutine()); 
+        TimeManager.Instance.ToggleTimeState();
     }
 
-    private void UpdateImage()
+    private System.Collections.IEnumerator CoolDownRoutine()    //쿨타임
     {
-        bool isMorning = TimeManager.Instance.IsMorning;
+        _isCoolDown = true;
+        yield return new WaitForSeconds(_mCoolTime); 
+        _isCoolDown = false;
+    }
 
-        string path = isMorning ? "Image/Morning" : "Image/Night";
+
+    private void UpdateButtonImage(_mTimeState state)
+    {
+        string path = state switch
+        {
+            _mTimeState.Morning => "Image/Morning",
+            _mTimeState.Night => "Image/Night",
+            _mTimeState.Restaurant => "Image/Restaurant",
+            _ => "Image/Morning"
+        };
+
         Sprite newSprite = Resources.Load<Sprite>(path);
+
+        Debug.Log($"[Debug] 로드 시도 경로: {path}, 결과: {(newSprite == null ? "NULL!" : "성공")}");
 
         if (newSprite != null)
         {

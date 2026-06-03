@@ -26,13 +26,13 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            TimeManager.Instance.TimeSetMorning();
-        }
-        if(Input.GetKeyDown(KeyCode.F))
-        {
-            TimeManager.Instance.TimeSetNight();
-        }
+        //if(Input.GetKeyDown(KeyCode.R))
+        //{
+        //    TimeManager.Instance.TimeSetMorning();
+        //}
+        //if(Input.GetKeyDown(KeyCode.F))
+        //{
+        //    TimeManager.Instance.TimeSetNight();
+        //}
     }
 }

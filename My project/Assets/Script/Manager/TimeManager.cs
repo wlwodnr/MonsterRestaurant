@@ -1,18 +1,26 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
+
+public enum _mTimeState { Morning, Night, Restaurant }
 
 public class TimeManager : MonoBehaviour
 {
-    public bool IsMorning { get; private set; }
     private Light2D globalLite2D;
+
+    public event System.Action<_mTimeState> OnTimeStateChanged;
+
+    public _mTimeState CurrentState { get; private set; } = _mTimeState.Morning;
+
+
 
     [Header("Light Setting")]
     [SerializeField]
     private float _MorningLightValue = 1.0f;
     [SerializeField]
     private float _NightLightValue = 0.4f;
-
     [SerializeField] 
     private Light2D Light_Global2D;
 
@@ -47,77 +55,45 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-
-    void Start()
-    {
-        if(Light_Global2D != null)
-        {
-            IsMorning = GetCurrentTimeState();
-        }
-        else
-        {
-            IsMorning = true;
-        }
-    }
-
     public void ToggleTimeState()
     {
-        if (IsMorning)
+        switch(CurrentState)
         {
-            TimeSetNight();
-        }
-        else
-        {
-            TimeSetMorning(); 
+            case _mTimeState.Morning:
+                SetState(_mTimeState.Night);
+                break;
+            case _mTimeState.Night:
+                SetState(_mTimeState.Restaurant);
+                break;
+            case _mTimeState.Restaurant:
+                SetState(_mTimeState.Morning);
+                break;
         }
     }
 
+    private void SetState(_mTimeState newState)
+    {
+        CurrentState = newState;
+        UpdateLighting();
 
+        OnTimeStateChanged?.Invoke(CurrentState);
+        Debug.Log($"[TimeManager] 상태가 {CurrentState}로 변경되었습니다.");
+    }
 
-    public void TimeSetNight()
+    private void UpdateLighting()
     {
         if(globalLite2D == null)
         {
-            Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
             return;
         }
-        if(IsMorning == false)
-        {
-            Debug.Log("이미 밤입니다");
-            return;
-        }
-        IsMorning = false;
-        Debug.Log("밤으로 변경됩니다.");
-        globalLite2D.intensity = _NightLightValue;
 
-    }
-    public void TimeSetMorning()
-    {
-        if (globalLite2D == null)
-        {
-            Debug.Log("인스팩터 창에 빛을 지정하지 않았습니다. 지정해주세요.");
-            return;
-        }
-        if(IsMorning == true)
-        {
-            Debug.Log("이미 낮입니다");
-            return;
-        }
-        IsMorning = true;
-        Debug.Log("낮으로 변경됩니다.");
-        globalLite2D.intensity = _MorningLightValue;
-        if(TileManager.Instance != null)
+        globalLite2D.intensity = (CurrentState == _mTimeState.Morning) ? _MorningLightValue : _NightLightValue;
+
+        if(CurrentState == _mTimeState.Morning && TileManager.Instance != null)
         {
             TileManager.Instance.DryingGround();
         }
+    
     }
 
-    private bool GetCurrentTimeState()
-    {
-        if (Light_Global2D == null)
-        {
-            return true;
-        }
-        return Light_Global2D.intensity > _NightLightValue;
-    }
 }
