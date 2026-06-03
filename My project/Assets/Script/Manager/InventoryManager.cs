@@ -15,6 +15,7 @@ public class InventoryManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -24,50 +25,38 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void AddItem(string name, int count)
+    public void AddItem(string itemId, int count)
     {
-        if (count <= 0)
+        if(string.IsNullOrEmpty(itemId))
         {
-            Debug.Log("인벤토리에 추가를 시도하였으나, 잘못된 입력");
+            Debug.Log("들어오는 아이템의 id값이 없습니다.");
             return;
         }
-
-        if (itemInventory.ContainsKey(name))
+        if(itemInventory.ContainsKey(itemId))
         {
-            itemInventory[name] += count;
+            itemInventory[itemId] += count;
         }
         else
         {
-            itemInventory.Add(name, count);
+            itemInventory[itemId] = count;
         }
-        Debug.Log($"[Inventory] 아이템 획득: {name}을(를) {count}만큼 획득하여 총 {itemInventory[name]}개가 되었습니다.");
 
-        OnInventoryChanged?.Invoke();
+            Debug.Log($"[Inventory] 아이템 획득: {name}을(를) {count}만큼 획득하여 총 {itemInventory[name]}개가 되었습니다.");
+
     }
 
-    public bool RemoveItem(string name, int count)
+    public bool RemoveItem(string itemId, int count)
     {
-        if (count <= 0)
+        if(!itemInventory.ContainsKey(itemId) || itemInventory[itemId] < count)
         {
-            Debug.Log("인벤토리에 빼기를 시도하였으나, 잘못된 입력");
+            Debug.LogWarning($"[Inventory] {itemId}의 수량이 부족하여 소모할 수 없습니다.");
             return false;
         }
-        else if (itemInventory.ContainsKey(name))
-        {
-            if (itemInventory[name] < count)
-            {
-                Debug.Log("인벤토리의 갯수보다 더 많은 양을 빼기를 시도하였습니다. 빼기 실패");
-                return false;
-            }
-            itemInventory[name] -= count;
-            OnInventoryChanged?.Invoke();
-            return true;
-        }
-        else
-        {
-            Debug.Log("없는 아이템을 빼려고 시도하셨습니다. 실패");
-            return false;
-        }
+
+        itemInventory[itemId] -= count;
+        Debug.Log($"[Inventory] {itemId} 소모: -{count} (현재 수량: {itemInventory[itemId]})");
+
+        return true;
     }
 
     public int GetItemCount(string name)
