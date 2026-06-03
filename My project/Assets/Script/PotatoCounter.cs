@@ -5,45 +5,14 @@ using UnityEngine.UI;
 public class PotatoCounter : MonoBehaviour
 {
     [SerializeField] private Text counterText;
-    [SerializeField] private string targetItemName = "Potato";
+    [SerializeField] private string targetItemId = "Crop_Potato";
 
-    void Start()
+    private void Update()
     {
-        if(InventoryManager.Instance != null)
+        if (InventoryManager.Instance != null && counterText != null)
         {
-            InventoryManager.Instance.OnInventoryChanged += UpdatePotatoCountUI;
+            int CurrentCount = InventoryManager.Instance.GetItemCount(targetItemId);
+            counterText.text = CurrentCount.ToString();
         }
-
-        UpdatePotatoCountUI();
-    }
-
-    private void OnDestroy()
-    {
-        if(InventoryManager.Instance != null )
-        {
-            InventoryManager.Instance.OnInventoryChanged -= UpdatePotatoCountUI;
-        }
-    }
-
-    private void UpdatePotatoCountUI()
-    {
-        if (counterText == null) return;
-
-        if(InventoryManager.Instance == null)
-        {
-            Debug.Log("인벤토리 매니저 없음");
-        }
-        else
-        {
-            int currentCount = InventoryManager.Instance.GetItemCount(targetItemName);
-
-            counterText.text = $"{targetItemName} : {currentCount}";
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

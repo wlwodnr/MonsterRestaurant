@@ -207,10 +207,12 @@ public class CropManager : MonoBehaviour
 
     private void HarvestCrop(CropObject cropObj, CropData data)
     {
-        string itemID = cropObj.CropId.Split('_')[0];
+        string rawName = cropObj.CropId.Split('_')[0];
+        string itemID = "Crop_" + rawName;
+
         int rewardCount = 1;
 
-        if(InventoryManager.Instance != null)
+        if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.AddItem(itemID, rewardCount);
             Debug.Log($"인벤토리에 수확물 {data.Name}이 추가되었습니다.");
