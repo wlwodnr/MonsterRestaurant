@@ -11,6 +11,8 @@ public static class GameUtil
         GameDataManager.Instance.LoadCropData(("JsonOutput/Crop"));
         GameDataManager.Instance.LoadDishData(("JsonOutput/Dish"));
         GameDataManager.Instance.LoadCustomerData(("JsonOutput/Customer"));
+        GameDataManager.Instance.LoadGroundTypeData("JsonOutput/GroundType");
+        GameDataManager.Instance.LoadItemData("JsonOutput/Item");
     }
 
     public static string GetFullDataPath(string dataTableName)

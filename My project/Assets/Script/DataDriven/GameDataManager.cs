@@ -39,6 +39,8 @@ public class GameDataManager : MonoBehaviour
 
     public Dictionary<string, CropData> CropDataList { get; private set; } = new Dictionary<string, CropData>();
     public Dictionary<string, DishData> DishDataList { get; private set; } = new Dictionary<string, DishData>();
+    public Dictionary<string, GroundTypeData> GroundTypeDataList { get; private set; } = new Dictionary<string, GroundTypeData>();
+    public Dictionary<string, ItemData> ItemDataList { get; private set; } = new Dictionary<string, ItemData>();
 
     public Dictionary<string, CustomerData> CustomerDataList { get; private set; } = new Dictionary<string, CustomerData>();
 
@@ -94,6 +96,16 @@ public class GameDataManager : MonoBehaviour
     }
 
 
+    public void LoadGroundTypeData(string resourcePath)
+    {
+        GroundTypeDataList = LoadData<GroundTypeData>(resourcePath);
+    }
+
+    public void LoadItemData(string resourcePath)
+    {
+        ItemDataList = LoadData<ItemData>(resourcePath);
+    }
+
     // [아래는 사용을 위한 부분들을 메서드 정의] =========================================================================================
     // Get과 Find이름을 꼭 구별 하자!
 
@@ -125,6 +137,24 @@ public class GameDataManager : MonoBehaviour
         }
         return CustomerDataList.TryGetValue(id, out var data) ? data : null;
     }
-    
+
+    public GroundTypeData GetGroundTypeData(string id)
+    {
+        if(GroundTypeDataList == null || string.IsNullOrEmpty(id))
+        {
+            return null;
+        }
+        return GroundTypeDataList.TryGetValue(id, out var data) ? data : null;
+    }
+
+    public ItemData GetItemData(string id)
+    {
+        if (ItemDataList == null || string.IsNullOrEmpty(id))
+        {
+            return null;
+        }
+        return ItemDataList.TryGetValue(id, out var data) ? data : null;
+    }
+
 
 }
