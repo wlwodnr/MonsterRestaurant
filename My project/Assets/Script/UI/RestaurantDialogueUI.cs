@@ -29,5 +29,12 @@ public class RestaurantDialogueUI : MonoBehaviour
             Text_DialogueDescription.text = customerData.Description;
         }
     }
+     
+    private void OnClickNextStep()
+    {
+        UIManger.Instance.CloseRestaurantDialogue();
+
+        UIManger.Instance.OpenRestaurantMenu();
+    }
 
 }
