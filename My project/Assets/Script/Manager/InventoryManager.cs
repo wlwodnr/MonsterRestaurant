@@ -8,7 +8,7 @@ public class InventoryManager : MonoBehaviour
 
     private Dictionary<string, int> itemInventory = new Dictionary<string, int>();
 
-    public event Action OnInventoryChanged;
+    //public event Action OnInventoryChanged;
 
 
     private void Awake()
