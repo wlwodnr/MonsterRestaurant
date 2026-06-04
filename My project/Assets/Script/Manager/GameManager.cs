@@ -2,15 +2,16 @@
 
 public class GameManager : MonoBehaviour
 {
-    //[SerializeField] private TimeManager timeManager;
-    
     public static GameManager Instance {  get; private set; }
+
+    public InventoryModel InventoryModel { get; private set; }
 
     private void Awake()
     {
         if(Instance == null)
         {
             Instance = this;
+            InitGameManager();
         }
         else
         {
@@ -23,6 +24,12 @@ public class GameManager : MonoBehaviour
     {
         GameDataTester.StartDataTest();
     }
+
+    private void InitGameManager()
+    {
+        InventoryModel = new InventoryModel();
+    }
+
 
     void Update()
     {
