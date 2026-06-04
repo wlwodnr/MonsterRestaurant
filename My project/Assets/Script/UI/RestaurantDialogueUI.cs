@@ -8,6 +8,7 @@ public class RestaurantDialogueUI : MonoBehaviour
 
     private void Awake()
     {
+        
         if(Button_Next != null)
         {
             Button_Next.onClick.RemoveAllListeners();
@@ -15,7 +16,7 @@ public class RestaurantDialogueUI : MonoBehaviour
     }
 
     public void SetDialogue(CustomerData customerData)
-    {
+    { 
         if(customerData == null)
         {
             return;

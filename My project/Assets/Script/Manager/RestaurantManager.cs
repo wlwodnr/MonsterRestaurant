@@ -24,6 +24,16 @@ public class RestaurantManager : MonoBehaviour
         }
     }
 
+    public void StartRandomCustomerRestaurant()
+    {
+        int randomOrderIndex = Random.Range(1, 11);
+        string randomCustomerId = $"Dokkaebi_Order_{randomOrderIndex}";
+
+        Debug.Log($"[레스토랑] 오늘 무작위로 선정된 주문 ID: {randomCustomerId}");
+
+        SetupTodayCustomer(randomCustomerId);
+    }
+
     public void SetupTodayCustomer(string customerId)
     {
         _currentCustomerData = GameDataManager.Instance.GetCustomerData(customerId);
