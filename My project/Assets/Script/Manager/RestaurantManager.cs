@@ -36,6 +36,7 @@ public class RestaurantManager : MonoBehaviour
             {
                 GameObject_Cutsomer.SetActive(true);
             }
+
         }
     }
     public void ServeDish(string seletedDishId)
