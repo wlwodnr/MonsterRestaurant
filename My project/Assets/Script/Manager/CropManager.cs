@@ -212,9 +212,9 @@ public class CropManager : MonoBehaviour
 
         int rewardCount = 1;
 
-        if (InventoryManager.Instance != null)
+        if (GameManager.Instance != null)
         {
-            InventoryManager.Instance.AddItem(itemID, rewardCount);
+            GameManager.Instance.InventoryModel.AddItem(itemID, rewardCount);
             Debug.Log($"인벤토리에 수확물 {data.Name}이 추가되었습니다.");
         }
         else
@@ -229,7 +229,6 @@ public class CropManager : MonoBehaviour
 
         Destroy(cropObj.gameObject);
         Debug.Log($"[{cropObj.CellPosition}] 좌표의 식물을 성공적으로 수확하고 제거했습니다.");
-
 
     }
 
