@@ -67,8 +67,35 @@ public class RestaurantManager : MonoBehaviour
             return;
         }
         string costItemId = dishData.CostItemID;
-        int constCount = dishData.CostCount;
+        int costCount = dishData.CostCount;
 
+        int currentPotatoCount = GameManager.Instance.InventoryModel.GetItemCount(costItemId);
+
+        if(currentPotatoCount < costCount)
+        {
+            Debug.LogWarning($"[레스토랑] 재료 부족! 필요량: {costCount}, 보유량: {currentPotatoCount}");
+            return;
+        }
+        GameManager.Instance.InventoryModel.RemoveItem(costItemId, costCount);
+
+        int finalRewardPrice = dishData.Price;
+        string rewardItemId = dishData.PriceItemID;
+
+        if(_currentCustomerData.CorrectAnswer == seletedDishId)
+        {
+            finalRewardPrice *= 2;
+            Debug.Log($"[정답] 도깨비의 기호에 일치하여 보상 2배 지급 적용. 금액: {finalRewardPrice}");
+        }
+        else
+        {
+            Debug.Log($"[일반 서빙] 요구와 다른 음식을 주어 기본 가치만 지급합니다. 금액: {finalRewardPrice}");
+        }
+
+        GameManager.Instance.InventoryModel.AddItem(rewardItemId, finalRewardPrice);
+        if (GameObject_Cutsomer != null)
+        {
+            GameObject_Cutsomer.SetActive(false);
+        }
     }
 
 }
