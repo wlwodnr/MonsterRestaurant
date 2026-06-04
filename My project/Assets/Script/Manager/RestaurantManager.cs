@@ -46,7 +46,12 @@ public class RestaurantManager : MonoBehaviour
             {
                 GameObject_Cutsomer.SetActive(true);
             }
-
+            
+            UIManger.Instance.OpenRestaurantDialogue(_currentCustomerData);
+        }
+        else
+        {
+            Debug.LogError($"[RestaurantManager] {customerId} 데이터를 로드하지 못했습니다.");
         }
     }
     public void ServeDish(string seletedDishId)
@@ -62,7 +67,8 @@ public class RestaurantManager : MonoBehaviour
             return;
         }
         string costItemId = dishData.CostItemID;
-        int constCount = 
+        int constCount = dishData.CostCount;
+
     }
 
 }
