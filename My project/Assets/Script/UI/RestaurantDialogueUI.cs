@@ -33,9 +33,9 @@ public class RestaurantDialogueUI : MonoBehaviour
      
     private void OnClickNextStep()
     {
-        UIManger.Instance.CloseRestaurantDialogue();
+        UIManager.Instance.CloseRestaurantDialogue();
 
-        UIManger.Instance.OpenRestaurantMenu();
+        UIManager.Instance.OpenRestaurantMenu();
     }
 
 }

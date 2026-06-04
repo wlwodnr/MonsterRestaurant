@@ -47,7 +47,7 @@ public class RestaurantManager : MonoBehaviour
                 GameObject_Cutsomer.SetActive(true);
             }
             
-            UIManger.Instance.OpenRestaurantDialogue(_currentCustomerData);
+            UIManager.Instance.OpenRestaurantDialogue(_currentCustomerData);
         }
         else
         {
