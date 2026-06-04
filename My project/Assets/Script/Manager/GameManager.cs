@@ -2,8 +2,14 @@
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance {  get; private set; }
+    [Header("Game Win/Lose Conditions")]
+    [SerializeField] private int MaxGameDays = 10;          //제한 시간
+    [SerializeField] private int TargetClearGold = 1500;    //클리어 조건
 
+    [SerializeField]
+    private int _currentDay = 1;
+
+    public static GameManager Instance {  get; private set; }
     public InventoryModel InventoryModel { get; private set; }
 
     private void Awake()
@@ -30,6 +36,28 @@ public class GameManager : MonoBehaviour
         InventoryModel = new InventoryModel();
     }
 
+    public void AdvanceDay()
+    {
+        _currentDay++;
+        Debug.Log($"[GameManager] 날짜 경과. 현재 일수: {_currentDay}일차");
+
+        CheckGameEndConditions();
+    }
+
+    public void CheckGameEndConditions()
+    {
+        int currentGold = InventoryModel.GetItemCount("Dokkaebi_Coin");
+
+        if( currentGold > TargetClearGold )
+        {
+            Debug.Log($"[게임 클리어] {MaxGameDays}일 내에 {TargetClearGold} 코인을 모았습니다! 최종 코인: {currentGold}");
+            return;
+        }
+        if (_currentDay > MaxGameDays)
+        {
+            Debug.Log($"[게임 오버] {MaxGameDays}일이 지났으나 목표 금액에 도달하지 못했습니다. 최종 코인: {currentGold}");
+        }
+    }
 
     void Update()
     {
