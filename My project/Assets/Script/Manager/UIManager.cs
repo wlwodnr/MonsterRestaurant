@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
             Debug.Log("[UIManager] UI_RestaurantMenu가 인스펙터에 연결되지 않았습니다.");
             return;
         }
-        UI_RestaurantDialogue.gameObject.SetActive(true );
+        UI_RestaurantMenu.gameObject.SetActive(true );
         UI_RestaurantMenu.SetupMenuPanel();
     }
 
