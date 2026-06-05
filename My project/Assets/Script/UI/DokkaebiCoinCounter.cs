@@ -9,7 +9,7 @@ public class DokkaebiCoinCounter : MonoBehaviour
     {
         if (Text_CoinAmount == null)
         {
-            Text_CoinAmount = GetComponent<Text>();
+            Text_CoinAmount = GetComponentInChildren<Text>();
         }
 
     }
@@ -27,7 +27,7 @@ public class DokkaebiCoinCounter : MonoBehaviour
         }
         if(GameManager.Instance != null && GameManager.Instance.InventoryModel !=null)
         {
-            int currentCoinCount = GameManager.Instance.InventoryModel.GetItemCount("Dokkeabi_Coin");
+            int currentCoinCount = GameManager.Instance.InventoryModel.GetItemCount("Dokkaebi_Coin");
 
             Text_CoinAmount.text = currentCoinCount.ToString();
         }
