@@ -12,7 +12,7 @@ public class InventoryModel
         }
         if(_itemInventory.ContainsKey(itemId))
         {
-            _itemInventory[itemId] = count;
+            _itemInventory[itemId] += count;
         }
         else
         {

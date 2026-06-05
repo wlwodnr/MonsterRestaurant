@@ -15,6 +15,7 @@ public class RestaurantDialogueUI : MonoBehaviour
         if(Button_Next != null)
         {
             Button_Next.onClick.RemoveAllListeners();
+            Button_Next.onClick.AddListener(OnClickNextStep);
         }
     }
 
@@ -36,6 +37,7 @@ public class RestaurantDialogueUI : MonoBehaviour
      
     private void OnClickNextStep()
     {
+        Debug.Log("[RestaurantDialogueUI] 버튼이 성공적으로 인지되어 화면을 전환합니다.");
         UIManager.Instance.CloseRestaurantDialogue();
 
         UIManager.Instance.OpenRestaurantMenu();

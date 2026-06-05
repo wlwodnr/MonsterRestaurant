@@ -148,6 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 208508583715636350}
   - component: {fileID: 2032619561196802611}
+  - component: {fileID: 5326624022800015663}
   m_Layer: 0
   m_Name: DNInventory
   m_TagString: Untagged
@@ -187,6 +188,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0c9de2c0a96bc439fbe8464dd17807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DaniTechUIBase
+--- !u!114 &5326624022800015663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973974220938394965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b4f7c9fda19794e8dc69a9eb730328, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PotatoCounter
+  counterText: {fileID: 6980617845838019592}
+  targetItemId: Crop_Potato
 --- !u!1 &5098110121032109861
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +213,6 @@ GameObject:
   - component: {fileID: 1012070178589764204}
   - component: {fileID: 6745591916294495466}
   - component: {fileID: 6980617845838019592}
-  - component: {fileID: 1226198862746437144}
   m_Layer: 0
   m_Name: Potato_Count
   m_TagString: Untagged
@@ -267,20 +281,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
---- !u!114 &1226198862746437144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5098110121032109861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61b4f7c9fda19794e8dc69a9eb730328, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PotatoCounter
-  counterText: {fileID: 6980617845838019592}
-  targetItemName: Potato
 --- !u!1 &6027719832314343173
 GameObject:
   m_ObjectHideFlags: 0
