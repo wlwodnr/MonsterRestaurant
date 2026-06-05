@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
         UI_RestaurantMenu.SetupMenuPanel();
     }
 
-    public void CloseRestaurantMenue()
+    public void CloseRestaurantMenu()
     {
         if(UI_RestaurantMenu != null)
         {

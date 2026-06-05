@@ -9,6 +9,12 @@ public class RestaurantMenuUI : MonoBehaviour
     [SerializeField]
     private Button Button_DishSteamedPotato;
 
+    [Header("MenuInfo")]
+    [SerializeField]
+    private Text Text_PancakePotatoInfo;
+    [SerializeField]
+    private Text Text_SteamedPotatoInfo;
+
     private void Awake()
     {
         if(Button_DishPotatoPancake != null)
@@ -26,6 +32,19 @@ public class RestaurantMenuUI : MonoBehaviour
     public void SetupMenuPanel()
     {
         Debug.Log("[RestaurantMenuUI] 메뉴판 활성화 및 세팅 완료.");
+        DishData pancakePotatoData = GameDataManager.Instance.GetDishData("Potato_Food_01");
+        DishData steamedPotatoData = GameDataManager.Instance.GetDishData("Potato_Food_02");
+
+        int currentPotatoCount = GameManager.Instance.InventoryModel.GetItemCount("Crop_Potato");
+
+        if(pancakePotatoData != null && Text_PancakePotatoInfo != null)
+        {
+            Text_PancakePotatoInfo.text = $"{pancakePotatoData.Name}\n(필요 재료: { currentPotatoCount}/{pancakePotatoData.CostCount})";
+        }
+        if (steamedPotatoData != null && Text_SteamedPotatoInfo != null)
+        {
+            Text_SteamedPotatoInfo.text = $"{steamedPotatoData.Name}\n(필요 재료: {currentPotatoCount}/{steamedPotatoData.CostCount})";
+        }
     }
 
     private void OnClickDishButton(string dishId)
@@ -34,5 +53,6 @@ public class RestaurantMenuUI : MonoBehaviour
 
         RestaurantManager.Instance.ServeDish( dishId );
 
+        UIManager.Instance.CloseRestaurantMenu();
     }
 }
