@@ -76,6 +76,11 @@ public class TimeManager : MonoBehaviour
         CurrentState = newState;
         UpdateLighting();
 
+        if(CurrentState == _mTimeState.Restaurant)
+        {
+            TriggerRestaurantStart();
+        }
+
         OnTimeStateChanged?.Invoke(CurrentState);
         Debug.Log($"[TimeManager] 상태가 {CurrentState}로 변경되었습니다.");
     }
@@ -94,6 +99,20 @@ public class TimeManager : MonoBehaviour
             TileManager.Instance.DryingGround();
         }
     
+    }
+
+    private void TriggerRestaurantStart()
+    {
+        if(RestaurantManager.Instance != null)
+        {
+            Debug.Log("[TimeManager] 레스토랑 타임 시작 신호를 RestaurantManager에 전달합니다.");
+            RestaurantManager.Instance.StartRandomCustomerRestaurant();
+
+        }
+        else
+        {
+            Debug.LogError("[TimeManager] 씬에 RestaurantManager 싱글톤 인스턴스가 존재하지 않습니다!");
+        }
     }
 
 }

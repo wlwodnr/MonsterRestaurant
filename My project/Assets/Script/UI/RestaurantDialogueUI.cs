@@ -2,8 +2,11 @@
 using UnityEngine.UI;
 public class RestaurantDialogueUI : MonoBehaviour
 {
+    [SerializeField]
     private Text Text_DialogueDescription;
+    [SerializeField]
     private Text Text_CustomerName;
+    [SerializeField]
     private Button Button_Next;
 
     private void Awake()
