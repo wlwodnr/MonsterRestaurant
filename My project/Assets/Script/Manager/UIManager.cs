@@ -1,8 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    
     public static UIManager Instance { get; private set; }
+
+    [SerializeField]
+    private GameObject TitlePanel;
+    [SerializeField]
+    private GameObject GameClearPanel;
+
+    [SerializeField]
+    private Button Button_GameStart;
+    [SerializeField]
+    private Button Button_ExitGame;
+
     [SerializeField] 
     private RestaurantDialogueUI UI_RestaurantDialogue;
     [SerializeField] 
@@ -18,6 +31,21 @@ public class UIManager : MonoBehaviour
         {
             Debug.LogWarning($"중복된 UIManager가 있어 파괴합니다: {gameObject.name}");
             Destroy(gameObject);
+        }
+        InitButton();
+    }
+
+    private void InitButton()
+    {
+        if(Button_GameStart != null)
+        {
+            Button_GameStart.onClick.RemoveAllListeners();
+            Button_GameStart.onClick.AddListener(OnClickGameStart);
+        }
+        if (Button_ExitGame != null)
+        {
+            Button_ExitGame.onClick.RemoveAllListeners();
+            Button_ExitGame.onClick.AddListener(OnClickExitGame);
         }
     }
 
@@ -58,5 +86,45 @@ public class UIManager : MonoBehaviour
         {
             UI_RestaurantMenu.gameObject.SetActive(false);
         }
+    }
+
+    public void OpenTitleUI()
+    {
+        if(TitlePanel != null)
+        {
+            TitlePanel.gameObject.SetActive(true );
+            
+        }
+        if(GameClearPanel != null)
+        {
+            GameClearPanel.gameObject.SetActive(false);
+        }
+    }
+    public void OpenGameClearUI()
+    {
+        if(TitlePanel != null)
+        {
+            TitlePanel.gameObject.SetActive(false );
+        }
+        if(GameClearPanel != null)
+        {
+            GameClearPanel.gameObject.SetActive(true );
+        }
+    }
+
+    private void OnClickGameStart()
+    {
+        Debug.Log("[UIManager] 게임 시작! 메인 화면을 닫습니다.");
+        if (TitlePanel != null) 
+        { 
+            TitlePanel.SetActive(false); 
+        }
+    }
+    private void OnClickExitGame()
+    {
+        Debug.Log("[UIManager] 클리어 화면에서 게임을 종료합니다.");
+
+        UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
     }
 }
