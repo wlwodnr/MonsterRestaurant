@@ -11,7 +11,6 @@ public class PotatoCounter : MonoBehaviour
     {
         if (InventoryManager.Instance != null && counterText != null)
         {
-            //int CurrentCount = InventoryManager.Instance.GetItemCount(targetItemId);
             int CurrentCount = GameManager.Instance.InventoryModel.GetItemCount(targetItemId);
             counterText.text = CurrentCount.ToString();
         }

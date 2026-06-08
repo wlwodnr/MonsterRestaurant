@@ -49,11 +49,6 @@ public class PlayerController : MonoBehaviour
         {
             PlayerWatering();
         }
-        if(Input.GetKeyDown((KeyCode.F)))
-        {
-            anim.SetTrigger("Harvesting");
-        }
-
 
     }
     
