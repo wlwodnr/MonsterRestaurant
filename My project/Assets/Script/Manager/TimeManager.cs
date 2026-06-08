@@ -66,6 +66,7 @@ public class TimeManager : MonoBehaviour
                 SetState(_mTimeState.Restaurant);
                 break;
             case _mTimeState.Restaurant:
+                AdvanceToNextDay();
                 SetState(_mTimeState.Morning);
                 break;
         }
@@ -112,6 +113,15 @@ public class TimeManager : MonoBehaviour
         else
         {
             Debug.LogError("[TimeManager] 씬에 RestaurantManager 싱글톤 인스턴스가 존재하지 않습니다!");
+        }
+    }
+    private void AdvanceToNextDay()
+    {
+        Debug.Log("[TimeManager] 하루가 지나고 다음 날 아침이 되었습니다.");
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AdvanceDay();
         }
     }
 
