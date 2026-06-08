@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     }
     public void Start()
     {
-        GameDataTester.StartDataTest();
+        //GameDataTester.StartDataTest();
     }
 
     private void InitGameManager()
@@ -48,14 +48,23 @@ public class GameManager : MonoBehaviour
     {
         int currentGold = InventoryModel.GetItemCount("Dokkaebi_Coin");
 
-        if( currentGold > TargetClearGold )
+        if( currentGold >= TargetClearGold )
         {
             Debug.Log($"[게임 클리어] {MaxGameDays}일 내에 {TargetClearGold} 코인을 모았습니다! 최종 코인: {currentGold}");
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.OpenGameClearUI();
+            }
             return;
         }
         if (_currentDay > MaxGameDays)
         {
             Debug.Log($"[게임 오버] {MaxGameDays}일이 지났으나 목표 금액에 도달하지 못했습니다. 최종 코인: {currentGold}");
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.OpenGameOverUI();
+            }
+            return;
         }
     }
 
@@ -63,4 +72,11 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    public void GameStart()
+    {
+        Debug.Log("[GameManager] 게임 시작! 데이터를 초기화합니다.");
+        _currentDay = 1;
+    }
+
 }

@@ -95,6 +95,7 @@ public class RestaurantManager : MonoBehaviour
         {
             GameObject_Cutsomer.SetActive(false);
         }
+        GameManager.Instance.CheckGameEndConditions();
     }
 
 }
