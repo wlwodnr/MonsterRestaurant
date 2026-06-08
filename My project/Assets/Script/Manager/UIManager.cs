@@ -10,6 +10,10 @@ public class UIManager : MonoBehaviour
     private GameObject TitlePanel;
     [SerializeField]
     private GameObject GameClearPanel;
+    [SerializeField]
+    private GameObject GameOverPanel;
+    [SerializeField]
+    private Button Button_GameOverExit;
 
     [SerializeField]
     private Button Button_GameStart;
@@ -46,6 +50,11 @@ public class UIManager : MonoBehaviour
         {
             Button_ExitGame.onClick.RemoveAllListeners();
             Button_ExitGame.onClick.AddListener(OnClickExitGame);
+        }
+        if(Button_GameOverExit != null)
+        {
+            Button_GameOverExit.onClick.RemoveAllListeners();
+            Button_GameOverExit.onClick.AddListener(OnClickExitGame);
         }
     }
 
@@ -99,6 +108,10 @@ public class UIManager : MonoBehaviour
         {
             GameClearPanel.gameObject.SetActive(false);
         }
+        if (GameOverPanel != null)
+        {
+            GameOverPanel.gameObject.SetActive(false);
+        }
     }
     public void OpenGameClearUI()
     {
@@ -110,6 +123,26 @@ public class UIManager : MonoBehaviour
         {
             GameClearPanel.gameObject.SetActive(true );
         }
+        if (GameOverPanel != null)
+        {
+            GameOverPanel.gameObject.SetActive(false);
+        }
+    }
+
+    public void OpenGameOverUI()
+    {
+        if(TitlePanel != null)
+        {
+            TitlePanel.gameObject.SetActive(false);
+        }
+        if (GameClearPanel != null)
+        {
+            GameClearPanel.gameObject.SetActive(false);
+        }
+        if(GameOverPanel != null)
+        {
+            GameOverPanel.gameObject.SetActive(true);
+        }
     }
 
     private void OnClickGameStart()
@@ -119,12 +152,15 @@ public class UIManager : MonoBehaviour
         { 
             TitlePanel.SetActive(false); 
         }
+        GameManager.Instance.GameStart();
     }
     private void OnClickExitGame()
     {
         Debug.Log("[UIManager] 클리어 화면에서 게임을 종료합니다.");
-
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 }
