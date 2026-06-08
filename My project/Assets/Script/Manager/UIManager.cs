@@ -39,6 +39,12 @@ public class UIManager : MonoBehaviour
         InitButton();
     }
 
+    private void Start()
+    {
+        OpenTitleUI();
+    }
+
+
     private void InitButton()
     {
         if(Button_GameStart != null)
@@ -99,7 +105,9 @@ public class UIManager : MonoBehaviour
 
     public void OpenTitleUI()
     {
-        if(TitlePanel != null)
+        Debug.Log("메인 페이지 UI를 킵니다.");
+
+        if (TitlePanel != null)
         {
             TitlePanel.gameObject.SetActive(true );
             
@@ -115,13 +123,19 @@ public class UIManager : MonoBehaviour
     }
     public void OpenGameClearUI()
     {
+        Debug.Log("게임 클리어 UI를 킵니다.");
         if(TitlePanel != null)
         {
             TitlePanel.gameObject.SetActive(false );
         }
         if(GameClearPanel != null)
         {
+            Debug.Log("성공.");
             GameClearPanel.gameObject.SetActive(true );
+        }
+        else
+        {
+            Debug.Log("실패.");
         }
         if (GameOverPanel != null)
         {
@@ -131,21 +145,29 @@ public class UIManager : MonoBehaviour
 
     public void OpenGameOverUI()
     {
-        if(TitlePanel != null)
+        Debug.Log("게임 오버 UI를 킵니다.");
+
+        if (TitlePanel != null)
         {
             TitlePanel.gameObject.SetActive(false);
         }
         if (GameClearPanel != null)
         {
+            Debug.Log("성공.");
+
             GameClearPanel.gameObject.SetActive(false);
         }
-        if(GameOverPanel != null)
+        else
+        {
+            Debug.Log("실패.");
+        }
+        if (GameOverPanel != null)
         {
             GameOverPanel.gameObject.SetActive(true);
         }
     }
 
-    private void OnClickGameStart()
+    private void OnClickGameStart() 
     {
         Debug.Log("[UIManager] 게임 시작! 메인 화면을 닫습니다.");
         if (TitlePanel != null) 
