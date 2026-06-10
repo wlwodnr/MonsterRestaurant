@@ -106,7 +106,8 @@ public class TimeManager : MonoBehaviour
     {
         if(RestaurantManager.Instance != null)
         {
-            Debug.Log("[TimeManager] 레스토랑 타임 시작 신호를 RestaurantManager에 전달합니다.");
+            Debug.Log("[TimeManager] 레스토랑 타임 " +
+                "시작 신호를 RestaurantManager에 전달합니다.");
             RestaurantManager.Instance.StartRandomCustomerRestaurant();
 
         }

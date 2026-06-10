@@ -83,7 +83,8 @@ public class RestaurantManager : MonoBehaviour
         if(_currentCustomerData.CorrectAnswer == seletedDishId)
         {
             finalRewardPrice *= 2;
-            Debug.Log($"[정답] 도깨비의 기호에 일치하여 보상 2배 지급 적용. 금액: {finalRewardPrice}");
+            Debug.Log($"[정답] 도깨비의 기호에 일치하여 " +
+                $"보상 2배 지급 적용. 금액: {finalRewardPrice}");
         }
         else
         {
